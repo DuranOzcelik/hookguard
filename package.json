@@ -1,0 +1,12 @@
+{
+  "name": "hookguard",
+  "private": true,
+  "description": "Web page and browser extension; the Python backend lives at the repository root",
+  "workspaces": [
+    "web",
+    "extension"
+  ],
+  "overrides": {
+    "vite": "8.3.4"
+  }
+}

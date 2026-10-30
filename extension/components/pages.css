@@ -1,0 +1,159 @@
+/* Layout of the extension's own pages (warning, popup, options). Components and tokens are shared. */
+
+.warning-page,
+.options-page {
+  display: grid;
+  gap: var(--space-6);
+  width: min(100% - 2 * var(--gutter), var(--reading));
+  margin: 0 auto;
+  padding: var(--space-10) 0 var(--space-16);
+}
+
+.page-brand {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+  font-weight: var(--weight-bold);
+  color: var(--fg-muted);
+}
+
+.continue {
+  font-size: var(--text-sm);
+  color: var(--fg-muted);
+}
+
+.pin-form {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.pin-form__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.pin-form__row .hg-input {
+  flex: 1 1 10rem;
+}
+
+/* PIN boxes: wide spacing so each typed digit shows as its own dot */
+input[type="password"].hg-input {
+  font-size: var(--text-lg);
+  letter-spacing: 0.3em;
+}
+
+/* Popup */
+.popup {
+  display: grid;
+  gap: var(--space-4);
+  width: 23.75rem;
+  padding: var(--space-4);
+}
+
+.popup__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.popup .hg-status {
+  padding: var(--space-4);
+}
+
+.popup .hg-status__title {
+  font-size: var(--text-xl);
+}
+
+.popup .hg-status__domain {
+  font-size: var(--text-base);
+}
+
+.popup .hg-result__body {
+  gap: var(--space-4);
+  padding: var(--space-4);
+}
+
+.popup .hg-btn {
+  min-height: var(--touch-min);
+  font-size: var(--text-sm);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.stats div {
+  display: grid;
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface-2);
+  border-radius: var(--radius-md);
+}
+
+.stats dt {
+  font-size: var(--text-sm);
+  color: var(--fg-muted);
+}
+
+.stats dd {
+  margin: 0;
+  font-size: var(--text-xl);
+  font-weight: var(--weight-black);
+  font-variant-numeric: tabular-nums;
+}
+
+.fine {
+  font-size: var(--text-sm);
+  color: var(--fg-muted);
+}
+
+/* Options */
+.options-page h1 {
+  font-size: var(--text-2xl);
+}
+
+.options-page h2 {
+  margin-bottom: var(--space-2);
+  font-size: var(--text-xl);
+}
+
+.options-page .hg-card {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.choice-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.choice {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--touch-min);
+}
+
+.choice input {
+  width: var(--icon-md);
+  height: var(--icon-md);
+  accent-color: var(--brand);
+}
+
+.title-icon {
+  width: var(--icon-md);
+  height: var(--icon-md);
+  vertical-align: -0.15em;
+  color: var(--brand);
+}
+
+.choice-row {
+  margin: 0;
+  padding: 0;
+  border: none;
+}

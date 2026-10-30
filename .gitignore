@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+.env
+
+# Node
+node_modules/
+dist/
+.wxt/
+.output/
+web-ext.config.ts
+
+# Downloaded and generated files: Tranco list, trained model
+external/
+
+# Local state of a running API: user reports (unreviewed), safe short links
+reports/
+runtime/
+
+# Written by tools/update_usom.py on every fetch
+data/usom_fetch_log.csv
+
+# Editors
+.vscode/
+.idea/

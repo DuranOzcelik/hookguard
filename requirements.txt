@@ -1,0 +1,9 @@
+# API (backend/) and the maintenance tools (tools/)
+fastapi>=0.115
+uvicorn>=0.30
+requests>=2.31
+dnspython>=2.6
+scikit-learn>=1.5
+joblib>=1.4
+# tests
+pytest>=8

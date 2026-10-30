@@ -1,0 +1,762 @@
+/* HookGuard components, shared by the web page and the extension. Tokens only. */
+
+/* Layout */
+.hg-container {
+  width: min(100% - 2 * var(--gutter), var(--container));
+  margin-inline: auto;
+}
+
+.hg-stack {
+  display: grid;
+  gap: var(--space-4);
+}
+
+/* Buttons */
+.hg-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--control-h);
+  padding: var(--space-2) var(--space-5);
+  font-size: var(--text-base);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  text-decoration: none;
+  border: var(--border-w-strong) solid transparent;
+  border-radius: var(--radius-md);
+  transition:
+    background-color var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+
+.hg-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.hg-btn:disabled {
+  opacity: 0.5;
+}
+
+.hg-btn svg {
+  width: var(--icon-md);
+  height: var(--icon-md);
+}
+
+.hg-btn--primary {
+  color: var(--on-brand);
+  background: var(--brand) linear-gradient(180deg, rgb(255 255 255 / 0.16), transparent 60%);
+  box-shadow: var(--highlight), 0 8px 24px -10px rgb(var(--glow-a) / 0.7);
+}
+
+.hg-btn--primary:hover:not(:disabled) {
+  color: var(--on-brand);
+  background-color: var(--brand-hover);
+  box-shadow: var(--highlight), var(--glow-brand), 0 10px 28px -10px rgb(var(--glow-a) / 0.8);
+}
+
+.hg-btn--secondary {
+  color: var(--fg);
+  background: var(--surface-1);
+  border-color: var(--border-strong);
+}
+
+.hg-btn--secondary:hover:not(:disabled) {
+  color: var(--fg);
+  background: var(--surface-2);
+}
+
+.hg-btn--tone {
+  color: var(--tone-on-solid);
+  background: var(--tone-solid);
+}
+
+.hg-btn--tone:hover:not(:disabled) {
+  color: var(--tone-on-solid);
+  filter: brightness(1.08);
+}
+
+.hg-btn--ghost {
+  color: var(--fg);
+  background: transparent;
+}
+
+.hg-btn--ghost:hover:not(:disabled) {
+  background: var(--surface-2);
+}
+
+.hg-btn--lg {
+  min-height: var(--control-h-lg);
+  padding-inline: var(--space-6);
+}
+
+.hg-btn--block {
+  width: 100%;
+}
+
+.hg-btn--icon {
+  width: var(--control-h);
+  padding: 0;
+}
+
+.hg-link-btn {
+  padding: 0;
+  font-size: inherit;
+  color: var(--fg-muted);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  background: none;
+  border: none;
+}
+
+.hg-link-btn:hover {
+  color: var(--fg);
+}
+
+/* Cards */
+.hg-card {
+  padding: var(--space-6);
+  background: var(--surface-1);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-1), var(--highlight);
+}
+
+.hg-card--raised {
+  box-shadow: var(--shadow-2), var(--highlight);
+}
+
+.hg-icon-tile {
+  display: grid;
+  place-items: center;
+  width: var(--space-16);
+  height: var(--space-16);
+  color: var(--tone-fg, var(--brand));
+  background: var(--tone-soft, var(--brand-soft));
+  border-radius: var(--radius-lg);
+}
+
+.hg-icon-tile svg {
+  width: var(--icon-xl);
+  height: var(--icon-xl);
+}
+
+/* Chips and badges */
+.hg-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--touch-min);
+  padding: var(--space-1) var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--fg);
+  background: var(--surface-2);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius-pill);
+  transition: background-color var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out);
+}
+
+.hg-chip:hover {
+  background: var(--surface-3);
+  border-color: var(--border-strong);
+}
+
+.hg-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0 var(--space-3);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  color: var(--tone-on-solid);
+  background: var(--tone-solid);
+  border-radius: var(--radius-pill);
+}
+
+/* Form fields */
+.hg-label {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-weight: var(--weight-medium);
+}
+
+.hg-input {
+  width: 100%;
+  min-height: var(--control-h);
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-base);
+  color: var(--fg);
+  background: var(--surface-1);
+  border: var(--border-w-strong) solid var(--border-strong);
+  border-radius: var(--radius-md);
+}
+
+.hg-input:focus-visible {
+  border-color: var(--brand);
+}
+
+.hg-note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--fg-muted);
+}
+
+.hg-note svg {
+  width: var(--icon-md);
+  height: var(--icon-md);
+  color: var(--brand);
+}
+
+.hg-error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--danger-fg);
+}
+
+.hg-error svg {
+  width: var(--icon-md);
+  height: var(--icon-md);
+}
+
+/* Result: status band. Phone: icon and title share a row, the rest runs full width. */
+.hg-result {
+  overflow: hidden;
+  background: var(--surface-1);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-2), var(--highlight);
+}
+
+.hg-status {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    "icon title"
+    "domain domain"
+    "meaning meaning"
+    "ring ring";
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  padding: var(--space-5);
+  background: var(--tone-soft);
+  border-left: var(--stripe) solid var(--tone-solid);
+}
+
+.hg-status__icon {
+  grid-area: icon;
+  width: var(--icon-lg);
+  height: var(--icon-lg);
+  color: var(--tone-fg);
+}
+
+.hg-status__title {
+  grid-area: title;
+  font-size: var(--text-2xl);
+  color: var(--tone-fg);
+}
+
+.hg-status__domain {
+  grid-area: domain;
+  font-family: var(--font-mono);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  color: var(--fg);
+  overflow-wrap: anywhere;
+}
+
+.hg-status__meaning {
+  grid-area: meaning;
+  color: var(--fg);
+}
+
+.hg-status__ring {
+  grid-area: ring;
+  justify-self: start;
+  margin-top: var(--space-2);
+}
+
+@media (min-width: 640px) {
+  .hg-status {
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+      "icon title ring"
+      "icon domain ring"
+      "icon meaning ring";
+    align-items: start;
+    gap: var(--space-1) var(--space-4);
+    padding: var(--space-6);
+  }
+
+  .hg-status__icon {
+    width: var(--icon-xl);
+    height: var(--icon-xl);
+  }
+
+  .hg-status__ring {
+    align-self: center;
+    justify-self: end;
+    margin-top: 0;
+  }
+}
+
+.hg-result__body {
+  display: grid;
+  gap: var(--space-6);
+  padding: var(--space-6);
+}
+
+.hg-subtitle {
+  margin-bottom: var(--space-3);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+}
+
+/* Score ring */
+.hg-ring {
+  position: relative;
+  width: var(--ring-size);
+  height: var(--ring-size);
+}
+
+.hg-ring svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.hg-ring__track,
+.hg-ring__value {
+  fill: none;
+  stroke-width: 9;
+}
+
+.hg-ring__track {
+  stroke: var(--surface-3);
+}
+
+.hg-ring__value {
+  stroke: var(--tone-solid);
+  stroke-linecap: round;
+}
+
+.hg-ring__label {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  line-height: 1;
+}
+
+.hg-ring__score {
+  font-size: var(--text-xl);
+  font-weight: var(--weight-black);
+  font-variant-numeric: tabular-nums;
+  color: var(--tone-fg);
+}
+
+.hg-ring__max {
+  margin-top: var(--space-1);
+  font-size: var(--text-sm);
+  color: var(--fg-muted);
+}
+
+/* Lists */
+.hg-reasons {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg-reasons li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.hg-reasons svg {
+  width: var(--icon-md);
+  height: var(--icon-md);
+  margin-top: var(--space-1);
+  color: var(--tone-fg);
+}
+
+.hg-steps {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+
+.hg-steps li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  counter-increment: step;
+}
+
+.hg-steps li::before {
+  content: counter(step);
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: var(--icon-lg);
+  height: var(--icon-lg);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  color: var(--tone-on-solid, var(--on-brand));
+  background: var(--tone-solid, var(--brand));
+  border-radius: var(--radius-pill);
+}
+
+/* Callouts: coloured boxes; the icon sits in the title row so the text keeps the full width */
+.hg-callout {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  background: var(--tone-soft);
+  border: var(--border-w) solid var(--tone-border);
+  border-radius: var(--radius-lg);
+}
+
+.hg-callout__title {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  color: var(--tone-fg);
+}
+
+.hg-callout__title svg {
+  width: var(--icon-lg);
+  height: var(--icon-lg);
+}
+
+.hg-callout__body {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.hg-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+/* Disclosure (details, FAQ) */
+.hg-disclosure {
+  border-top: var(--border-w) solid var(--border);
+}
+
+.hg-disclosure > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-height: var(--control-h-lg);
+  padding: var(--space-3) 0;
+  font-weight: var(--weight-bold);
+  list-style: none;
+  cursor: pointer;
+}
+
+.hg-disclosure > summary::-webkit-details-marker {
+  display: none;
+}
+
+.hg-disclosure > summary svg {
+  width: var(--icon-md);
+  height: var(--icon-md);
+  color: var(--fg-muted);
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.hg-disclosure[open] > summary svg {
+  transform: rotate(180deg);
+}
+
+.hg-disclosure__body {
+  padding-bottom: var(--space-5);
+  color: var(--fg);
+}
+
+.hg-facts {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.hg-facts div {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.hg-facts dt {
+  font-size: var(--text-sm);
+  color: var(--fg-muted);
+}
+
+.hg-facts dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 640px) {
+  .hg-facts div {
+    grid-template-columns: var(--label-col) 1fr;
+    gap: var(--space-4);
+  }
+}
+
+/* Logo */
+.hg-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-black);
+  color: var(--fg);
+  text-decoration: none;
+}
+
+.hg-logo svg {
+  width: var(--icon-lg);
+  height: var(--icon-lg);
+}
+
+.hg-logo__shield {
+  fill: var(--brand);
+}
+
+.hg-logo__hook {
+  fill: none;
+  stroke: var(--on-brand);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+/* Spinner */
+.hg-spinner {
+  width: var(--icon-md);
+  height: var(--icon-md);
+  border: var(--focus-w) solid currentColor;
+  border-right-color: transparent;
+  border-radius: var(--radius-pill);
+  animation: hg-spin 0.8s linear infinite;
+}
+
+@keyframes hg-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Nested support box (e.g. Yeşilay 115) */
+.hg-support {
+  background: var(--surface-1);
+}
+
+/* Report form */
+.hg-report {
+  display: grid;
+  gap: var(--space-4);
+}
+
+textarea.hg-input {
+  min-height: calc(var(--control-h) * 2);
+  resize: vertical;
+}
+
+/* Switch (settings): a checkbox with role="switch", label and description beside it */
+.hg-switch {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: var(--space-1) var(--space-4);
+  padding: var(--space-4) 0;
+  border-top: var(--border-w) solid var(--border);
+  cursor: pointer;
+}
+
+.hg-switch:first-child {
+  border-top: none;
+}
+
+.hg-switch__title {
+  font-weight: var(--weight-bold);
+}
+
+.hg-switch__desc {
+  grid-column: 1;
+  font-size: var(--text-sm);
+  color: var(--fg-muted);
+}
+
+.hg-switch input {
+  grid-row: 1 / span 2;
+  grid-column: 2;
+  appearance: none;
+  position: relative;
+  width: calc(var(--control-h) + var(--space-3));
+  height: var(--space-8);
+  margin: 0;
+  background: var(--surface-3);
+  border: var(--border-w-strong) solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: background-color var(--dur-base) var(--ease-out);
+}
+
+.hg-switch input::after {
+  content: "";
+  position: absolute;
+  top: var(--space-1);
+  left: var(--space-1);
+  width: calc(var(--space-6) - var(--border-w-strong));
+  height: calc(var(--space-6) - var(--border-w-strong));
+  background: var(--surface-1);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-1);
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.hg-switch input:checked {
+  background: var(--brand);
+  border-color: var(--brand);
+}
+
+.hg-switch input:checked::after {
+  transform: translateX(calc(var(--control-h) + var(--space-3) - var(--space-8)));
+}
+
+.hg-switch input:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+
+/* Modern surfaces: glass cards with a gradient edge, gradient text */
+.hg-glass {
+  position: relative;
+  background: var(--surface-card);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--glow-card), var(--shadow-2);
+  backdrop-filter: blur(var(--blur-glass)) saturate(1.3);
+}
+
+.hg-gradient-edge::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: var(--border-w-strong);
+  pointer-events: none;
+  background: var(--brand-gradient);
+  border-radius: inherit;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+.hg-gradient-text {
+  color: var(--brand);
+  background: var(--brand-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hg-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  color: var(--brand);
+  background: var(--brand-soft);
+  border: var(--border-w) solid rgb(var(--glow-a) / 0.25);
+  border-radius: var(--radius-pill);
+}
+
+.hg-eyebrow svg {
+  width: var(--icon-sm);
+  height: var(--icon-sm);
+}
+
+/* Segmented control (language, theme) and palette swatches */
+.hg-segmented {
+  display: inline-flex;
+  padding: var(--space-1);
+  background: var(--surface-2);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius-pill);
+}
+
+.hg-segmented button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  min-width: var(--touch-min);
+  min-height: var(--touch-min);
+  padding: 0 var(--space-3);
+  font-weight: var(--weight-bold);
+  color: var(--fg-muted);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-pill);
+}
+
+.hg-segmented button[aria-pressed="true"],
+.hg-segmented button[aria-checked="true"] {
+  color: var(--brand);
+  background: var(--surface-1);
+  box-shadow: var(--shadow-1);
+}
+
+.hg-segmented svg {
+  width: var(--icon-sm);
+  height: var(--icon-sm);
+}
+
+.hg-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.hg-swatch {
+  display: grid;
+  place-items: center;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  padding: 0;
+  background: var(--surface-1);
+  border: var(--border-w-strong) solid var(--border);
+  border-radius: var(--radius-pill);
+}
+
+.hg-swatch span {
+  width: calc(var(--touch-min) - var(--space-3));
+  height: calc(var(--touch-min) - var(--space-3));
+  /* Not var(--brand-gradient): that is resolved on :root, so it would show the active palette. */
+  background: linear-gradient(120deg, var(--brand), var(--brand-2));
+  border-radius: var(--radius-pill);
+}
+
+.hg-swatch[aria-checked="true"] {
+  border-color: var(--fg);
+}

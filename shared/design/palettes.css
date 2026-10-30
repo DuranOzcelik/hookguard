@@ -1,0 +1,190 @@
+/* Brand palettes (design-system/MASTER.md §3; generated, contrast checked: brand text and buttons at
+   least 4.5:1 on every surface in both themes). Aurora is also the default in tokens.css. Any
+   element can preview a palette with data-palette-preview (the swatches in the colour picker). */
+
+[data-palette-preview="aurora"] {
+  --brand: #5b3df5;
+  --brand-hover: #4a2be0;
+  --on-brand: #ffffff;
+  --brand-soft: #eeeaff;
+  --brand-2: #0369a1;
+  --glow-a: 91 61 245;
+  --glow-b: 14 165 233;
+  --glow-c: 236 72 153;
+}
+
+:root[data-theme="dark"] [data-palette-preview="aurora"] {
+  --brand: #a99cff;
+  --brand-hover: #c4bbff;
+  --on-brand: #130a3b;
+  --brand-soft: #1e1846;
+  --brand-2: #67e8f9;
+  --glow-a: 124 92 255;
+  --glow-b: 34 211 238;
+  --glow-c: 236 72 153;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) [data-palette-preview="aurora"] {
+    --brand: #a99cff;
+    --brand-hover: #c4bbff;
+    --on-brand: #130a3b;
+    --brand-soft: #1e1846;
+    --brand-2: #67e8f9;
+    --glow-a: 124 92 255;
+    --glow-b: 34 211 238;
+    --glow-c: 236 72 153;
+  }
+}
+
+[data-palette-preview="ocean"],
+:root[data-palette="ocean"] {
+  --brand: #1d4ed8;
+  --brand-hover: #1e40af;
+  --on-brand: #ffffff;
+  --brand-soft: #e6eeff;
+  --brand-2: #0e7490;
+  --glow-a: 29 78 216;
+  --glow-b: 8 145 178;
+  --glow-c: 99 102 241;
+}
+
+:root[data-theme="dark"] [data-palette-preview="ocean"],
+:root[data-palette="ocean"][data-theme="dark"] {
+  --brand: #86aeff;
+  --brand-hover: #a9c5ff;
+  --on-brand: #071a45;
+  --brand-soft: #12234a;
+  --brand-2: #67e8f9;
+  --glow-a: 59 130 246;
+  --glow-b: 34 211 238;
+  --glow-c: 99 102 241;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) [data-palette-preview="ocean"],
+  :root[data-palette="ocean"]:not([data-theme="light"]) {
+    --brand: #86aeff;
+    --brand-hover: #a9c5ff;
+    --on-brand: #071a45;
+    --brand-soft: #12234a;
+    --brand-2: #67e8f9;
+    --glow-a: 59 130 246;
+    --glow-b: 34 211 238;
+    --glow-c: 99 102 241;
+  }
+}
+
+[data-palette-preview="orchid"],
+:root[data-palette="orchid"] {
+  --brand: #a21caf;
+  --brand-hover: #86198f;
+  --on-brand: #ffffff;
+  --brand-soft: #fbe8fd;
+  --brand-2: #6d28d9;
+  --glow-a: 192 38 211;
+  --glow-b: 124 58 237;
+  --glow-c: 244 63 94;
+}
+
+:root[data-theme="dark"] [data-palette-preview="orchid"],
+:root[data-palette="orchid"][data-theme="dark"] {
+  --brand: #f0a3ff;
+  --brand-hover: #f5c2ff;
+  --on-brand: #3b0a45;
+  --brand-soft: #2e1236;
+  --brand-2: #c4b5fd;
+  --glow-a: 217 70 239;
+  --glow-b: 139 92 246;
+  --glow-c: 244 63 94;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) [data-palette-preview="orchid"],
+  :root[data-palette="orchid"]:not([data-theme="light"]) {
+    --brand: #f0a3ff;
+    --brand-hover: #f5c2ff;
+    --on-brand: #3b0a45;
+    --brand-soft: #2e1236;
+    --brand-2: #c4b5fd;
+    --glow-a: 217 70 239;
+    --glow-b: 139 92 246;
+    --glow-c: 244 63 94;
+  }
+}
+
+[data-palette-preview="lagoon"],
+:root[data-palette="lagoon"] {
+  --brand: #0f766e;
+  --brand-hover: #115e59;
+  --on-brand: #ffffff;
+  --brand-soft: #e3f3f1;
+  --brand-2: #0369a1;
+  --glow-a: 15 118 110;
+  --glow-b: 14 165 233;
+  --glow-c: 16 185 129;
+}
+
+:root[data-theme="dark"] [data-palette-preview="lagoon"],
+:root[data-palette="lagoon"][data-theme="dark"] {
+  --brand: #2dd4bf;
+  --brand-hover: #5eead4;
+  --on-brand: #042f2e;
+  --brand-soft: #0e2e2c;
+  --brand-2: #7dd3fc;
+  --glow-a: 45 212 191;
+  --glow-b: 56 189 248;
+  --glow-c: 52 211 153;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) [data-palette-preview="lagoon"],
+  :root[data-palette="lagoon"]:not([data-theme="light"]) {
+    --brand: #2dd4bf;
+    --brand-hover: #5eead4;
+    --on-brand: #042f2e;
+    --brand-soft: #0e2e2c;
+    --brand-2: #7dd3fc;
+    --glow-a: 45 212 191;
+    --glow-b: 56 189 248;
+    --glow-c: 52 211 153;
+  }
+}
+
+[data-palette-preview="graphite"],
+:root[data-palette="graphite"] {
+  --brand: #18181b;
+  --brand-hover: #3f3f46;
+  --on-brand: #ffffff;
+  --brand-soft: #ececf0;
+  --brand-2: #52525b;
+  --glow-a: 82 82 91;
+  --glow-b: 161 161 170;
+  --glow-c: 113 113 122;
+}
+
+:root[data-theme="dark"] [data-palette-preview="graphite"],
+:root[data-palette="graphite"][data-theme="dark"] {
+  --brand: #f4f4f5;
+  --brand-hover: #ffffff;
+  --on-brand: #18181b;
+  --brand-soft: #26262b;
+  --brand-2: #a1a1aa;
+  --glow-a: 161 161 170;
+  --glow-b: 212 212 216;
+  --glow-c: 113 113 122;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) [data-palette-preview="graphite"],
+  :root[data-palette="graphite"]:not([data-theme="light"]) {
+    --brand: #f4f4f5;
+    --brand-hover: #ffffff;
+    --on-brand: #18181b;
+    --brand-soft: #26262b;
+    --brand-2: #a1a1aa;
+    --glow-a: 161 161 170;
+    --glow-b: 212 212 216;
+    --glow-c: 113 113 122;
+  }
+}
