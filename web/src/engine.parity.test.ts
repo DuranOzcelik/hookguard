@@ -27,18 +27,18 @@ interface Case {
   category: CheckResult["category"];
 }
 
+const read = <T,>(name: string): T => JSON.parse(readFileSync(name, "utf-8"));
+
+// The describe body runs even when skipped, so the files are read inside the test.
 describe.skipIf(!ready)("on-device check", () => {
-  const read = <T,>(name: string): T => JSON.parse(readFileSync(name, "utf-8"));
-  const engine = new Engine(read<EngineData>(`${DATA}engine.json`));
-  const lists = {
-    blocklist: hashSet(read<BlockList>(`${DATA}blocklist.json`)),
-    allowlist: hashSet(read<BlockList>(`${DATA}allowlist.json`)),
-  };
-  const cases = ready ? read<Case[]>(PARITY) : [];
-
-  it("has cases", () => expect(cases.length).toBeGreaterThan(100));
-
   it("scores like the API", async () => {
+    const engine = new Engine(read<EngineData>(`${DATA}engine.json`));
+    const lists = {
+      blocklist: hashSet(read<BlockList>(`${DATA}blocklist.json`)),
+      allowlist: hashSet(read<BlockList>(`${DATA}allowlist.json`)),
+    };
+    const cases = read<Case[]>(PARITY);
+    expect(cases.length).toBeGreaterThan(100);
     const mismatches: string[] = [];
     for (const c of cases) {
       const r = await engine.check(c.host, lists, c.lang);
