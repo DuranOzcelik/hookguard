@@ -1,0 +1,63 @@
+name: Pages
+
+# The web page on GitHub Pages, with the data for checks on the device: the name model is
+# trained from data/, the lists are built from data/ and the Tranco list, and the
+# TypeScript check is tested against the Python one before anything is published.
+# Extensions download the same data files from here every few hours.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build the site and its data
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Download the Tranco list of popular sites
+        run: |
+          mkdir -p external/tranco
+          curl -fsSL --retry 3 -o external/tranco/top-1m.csv.zip https://tranco-list.eu/top-1m.csv.zip \
+            || echo "::warning::No Tranco list: the allowlist has official domains only"
+      - run: python -m tools.train_model
+      - run: python -m tools.build_static --parity build/parity.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Test, including the on-device check against the Python one
+        run: npm test -w web
+      - run: npm run build -w web
+        env:
+          VITE_BASE: /hookguard/
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/dist
+
+  deploy:
+    name: Publish
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

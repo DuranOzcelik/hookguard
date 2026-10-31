@@ -6,6 +6,7 @@ import { useLang } from "@shared/ui/i18n";
 import { IconClose, IconExtension, IconMenu, IconMoon, IconPalette, IconSun, IconSystem } from "@shared/ui/icons";
 import { Logo } from "@shared/ui/Logo";
 
+import { href, route } from "../paths";
 import { PALETTES, applyPalette, applyTheme, savedPalette, savedTheme, type Palette, type Theme } from "../prefs";
 
 const TEXT = {
@@ -161,7 +162,7 @@ export function Header({ onLang }: { onLang: (lang: Lang) => void }) {
   const button = useRef<HTMLButtonElement>(null);
   const panel = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
-  const here = location.pathname.replace(/\/+$/, "") || "/";
+  const here = route();
 
   useEffect(() => {
     if (!open) return;
@@ -179,10 +180,10 @@ export function Header({ onLang }: { onLang: (lang: Lang) => void }) {
   return (
     <header className="site-header">
       <div className="hg-container site-header__inner">
-        <Logo href="/" />
+        <Logo href={href("/")} />
         <nav className="site-nav" aria-label={t.menu}>
           {t.nav.map((n) => (
-            <a key={n.href} href={n.href} aria-current={n.href === here ? "page" : undefined}>
+            <a key={n.href} href={href(n.href)} aria-current={n.href === here ? "page" : undefined}>
               {n.label}
             </a>
           ))}
@@ -192,7 +193,7 @@ export function Header({ onLang }: { onLang: (lang: Lang) => void }) {
             <LangSwitch onLang={onLang} />
             <AppearanceButton />
           </div>
-          <a className="hg-btn hg-btn--primary site-header__cta" href="/#install">
+          <a className="hg-btn hg-btn--primary site-header__cta" href={href("/#install")}>
             <IconExtension aria-hidden="true" />
             {t.cta}
           </a>
@@ -222,11 +223,11 @@ export function Header({ onLang }: { onLang: (lang: Lang) => void }) {
           >
             <nav className="hg-container mobile-menu__nav" aria-label={t.menu}>
               {t.nav.map((n) => (
-                <a key={n.href} href={n.href} onClick={() => setOpen(false)}>
+                <a key={n.href} href={href(n.href)} onClick={() => setOpen(false)}>
                   {n.label}
                 </a>
               ))}
-              <a className="hg-btn hg-btn--primary hg-btn--block" href="/#install" onClick={() => setOpen(false)}>
+              <a className="hg-btn hg-btn--primary hg-btn--block" href={href("/#install")} onClick={() => setOpen(false)}>
                 <IconExtension aria-hidden="true" />
                 {t.cta}
               </a>

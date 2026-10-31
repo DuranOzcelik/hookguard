@@ -1,6 +1,6 @@
 /**
- * Verdicts: what the extension decided about a host, from the local lists, the API or
- * what the page itself showed. Kept in storage.session (cleared when the browser
+ * Verdicts: what the extension decided about a host, from the local lists, the check on
+ * this device or your own API, and what the page itself showed. Kept in storage.session (cleared when the browser
  * closes) for an hour, with the hosts the user chose to open despite a warning, and
  * stored in storage.local: the sites the user trusts for form entry.
  */
@@ -14,7 +14,7 @@ export interface Verdict {
   host: string;
   level: Level;
   score: number;
-  source: "blocklist" | "allowlist" | "api";
+  source: "blocklist" | "allowlist" | "device" | "api";
   reasons: Reason[];
   category: Category | null;
   ageDays: number | null;
@@ -26,13 +26,13 @@ export interface Verdict {
 const TTL = 60 * 60 * 1000;
 const MAX_CACHED = 500;
 
-export function fromResult(result: CheckResult): Verdict {
+export function fromResult(result: CheckResult, source: "device" | "api"): Verdict {
   const registered = result.details.registration?.registered_utc;
   return {
     host: result.domain,
     level: result.level,
     score: result.score,
-    source: "api",
+    source,
     reasons: result.reasons,
     category: result.category,
     ageDays: registered ? Math.floor((Date.now() - Date.parse(registered)) / 86_400_000) : null,
@@ -67,6 +67,15 @@ export function fromAllowlist(host: string, lang: Lang): Verdict {
     ageDays: null,
     checkedAt: Date.now(),
   };
+}
+
+/**
+ * Too new, or too unknown, to have earned trust: less than 180 days old, or of unknown age.
+ * The check on this device cannot see how old a site is, so there it takes some warning signs.
+ */
+export function unproven(verdict: Verdict): boolean {
+  if (verdict.ageDays !== null) return verdict.ageDays < 180;
+  return verdict.source === "device" ? verdict.score >= 25 : true;
 }
 
 /** The level people see: a category can raise it (unless category protection is off), never lower it. */

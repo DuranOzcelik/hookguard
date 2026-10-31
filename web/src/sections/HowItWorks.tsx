@@ -12,7 +12,7 @@ const TEXT = {
       ["Paste the link", "Press and hold the link in the message, choose “Copy” and paste it in the box above. You never need to tap it."],
       [
         "We check it",
-        "We compare the address with known scam lists, see how long the site has existed and whether its name looks like the names of scam sites.",
+        "We compare the address with lists of known scam sites and of well-known sites, and see whether its name looks like the names of scam sites.",
       ],
       ["See the answer", "“Looks safe”, “Be careful” or “Dangerous”: with the reasons and what to do next."],
     ],
@@ -24,7 +24,7 @@ const TEXT = {
       ["Linki yapıştır", "Mesajdaki linke basılı tut, “Kopyala”yı seç ve yukarıdaki kutuya yapıştır. Linke tıklaman gerekmez."],
       [
         "Analiz edilir",
-        "Adresi bilinen dolandırıcılık listeleriyle karşılaştırır, sitenin ne zamandır var olduğuna ve adının dolandırıcılık sitelerine benzeyip benzemediğine bakarız.",
+        "Adresi bilinen dolandırıcılık siteleri ve tanınmış siteler listeleriyle karşılaştırır, adının dolandırıcılık sitelerine benzeyip benzemediğine bakarız.",
       ],
       ["Sonucu gör", "“Güvenli görünüyor”, “Dikkatli ol” ya da “Tehlikeli”: nedenleriyle ve ne yapman gerektiğiyle birlikte."],
     ],

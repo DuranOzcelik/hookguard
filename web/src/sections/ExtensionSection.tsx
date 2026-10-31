@@ -1,3 +1,4 @@
+import { REPO_URL } from "@shared/hookguard";
 import { useLang } from "@shared/ui/i18n";
 import {
   IconBell,
@@ -23,7 +24,7 @@ const TEXT = {
     eyebrow: "Browser extension",
     title: "Stops dangerous sites before you open them",
     lead: "The HookGuard extension works quietly in Chrome, Edge or Firefox on your computer. When you click a link it checks the site first; if it is dangerous, it warns you before the page opens.",
-    note: "Only the domain of the sites you open is checked; well-known sites are never sent anywhere.",
+    note: "The sites you open are checked on your computer and never sent anywhere.",
     cta: "Add to Chrome",
     stopped: "HookGuard stopped this page before it opened",
     back: "Back to safety",
@@ -41,18 +42,19 @@ const TEXT = {
       ["Weekly summary", "Every week a short notification tells you how many sites were checked and how many dangers were stopped."],
     ],
     installTitle: "How do I add the extension?",
-    installLead: "The extension is not in the Chrome Web Store yet. For now you can build it from the source code and add it in developer mode:",
+    installLead: "The extension is not in the browser stores yet. Until then you can add it yourself in a minute:",
     install: [
-      ["Build the extension by following the instructions on the project's ", "GitHub page", "."],
-      ["In Chrome, type chrome://extensions in the address bar and turn on “Developer mode” at the top right.", "", ""],
-      ["Click “Load unpacked” and choose the built folder.", "", ""],
+      ["Download the zip file for your browser from the ", "downloads page", " and unzip it."],
+      ["In Chrome, type chrome://extensions in the address bar (in Edge, edge://extensions) and turn on “Developer mode”.", "", ""],
+      ["Click “Load unpacked” and choose the unzipped folder.", "", ""],
     ],
+    firefox: "Firefox: open about:debugging, choose “This Firefox” and “Load Temporary Add-on”, and pick manifest.json in the folder. Firefox removes it when it closes, until the extension is in its store.",
   },
   tr: {
     eyebrow: "Tarayıcı eklentisi",
     title: "Tehlikeli siteleri sen açmadan durdurur",
     lead: "HookGuard eklentisi bilgisayarındaki Chrome, Edge ya da Firefox'ta sessizce çalışır. Bir linke tıkladığında siteyi önce kontrol eder; tehlikeliyse sayfa açılmadan seni uyarır.",
-    note: "Ziyaret ettiğin sitelerin yalnızca alan adı kontrol edilir; tanınmış sitelerde sunucuya hiç sorulmaz.",
+    note: "Açtığın siteler senin bilgisayarında kontrol edilir ve hiçbir yere gönderilmez.",
     cta: "Chrome'a ekle",
     stopped: "HookGuard bu sayfayı açılmadan durdurdu",
     back: "Güvenli sayfaya dön",
@@ -70,12 +72,13 @@ const TEXT = {
       ["Haftalık özet", "Her hafta kaç siteyi kontrol ettiğini ve seni kaç tehlikeden koruduğunu kısa bir bildirimle söyler."],
     ],
     installTitle: "Eklentiyi nasıl eklerim?",
-    installLead: "Eklenti Chrome Web Mağazası'na henüz gelmedi. Şimdilik kaynak koddan derleyip “geliştirici modu” ile ekleyebilirsin:",
+    installLead: "Eklenti tarayıcı mağazalarına henüz gelmedi. O zamana kadar bir dakikada kendin ekleyebilirsin:",
     install: [
-      ["Projenin ", "GitHub sayfasındaki", " talimatla eklentiyi derle."],
-      ["Chrome'da adres çubuğuna chrome://extensions yaz ve sağ üstten “Geliştirici modu”nu aç.", "", ""],
-      ["“Paketlenmemiş öğe yükle”ye bas ve derlenen klasörü seç.", "", ""],
+      ["Tarayıcına uygun zip dosyasını ", "indirme sayfasından", " indir ve klasöre çıkar."],
+      ["Chrome'da adres çubuğuna chrome://extensions yaz (Edge'de edge://extensions) ve “Geliştirici modu”nu aç.", "", ""],
+      ["“Paketlenmemiş öğe yükle”ye bas ve çıkardığın klasörü seç.", "", ""],
     ],
+    firefox: "Firefox: about:debugging sayfasını aç, “Bu Firefox” ve “Geçici eklenti yükle”yi seç, klasördeki manifest.json dosyasını göster. Eklenti Firefox mağazasına gelene kadar Firefox kapanınca kaldırılır.",
   },
 };
 
@@ -153,12 +156,13 @@ export function ExtensionSection() {
               <li key={before}>
                 <span>
                   {before}
-                  {link && <a href="https://github.com/DuranOzcelik/hookguard">{link}</a>}
+                  {link && <a href={`${REPO_URL}/releases/latest`}>{link}</a>}
                   {after}
                 </span>
               </li>
             ))}
           </ol>
+          <p className="hg-note">{t.firefox}</p>
         </Reveal>
       </div>
     </section>

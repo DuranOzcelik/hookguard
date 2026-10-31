@@ -1,6 +1,7 @@
 import { useLang } from "@shared/ui/i18n";
 import { IconChevron } from "@shared/ui/icons";
 
+import { ON_DEVICE } from "../checks";
 import { Reveal } from "./Reveal";
 
 const TEXT: Record<"en" | "tr", { title: string; items: { q: string; a: string[] }[] }> = {
@@ -16,16 +17,21 @@ const TEXT: Record<"en" | "tr", { title: string; items: { q: string; a: string[]
       },
       {
         q: "What happens to the link I paste?",
-        a: [
-          "The full link stays on your device. Only the domain reaches our server: from ptt-kargo-odeme.example/track?no=123, only “ptt-kargo-odeme.example”.",
-          "The addresses you check are not stored. Short links (such as bit.ly) are the one exception: to see where one leads, we ask you before sending the short link itself.",
-        ],
+        a: ON_DEVICE
+          ? [
+              "Nothing leaves your device. The check runs in your browser, with lists the page downloads from this site, so nobody, not even us, learns which links you check.",
+              "Short links (such as bit.ly) hide where they lead, and a web page cannot see it without opening them. The HookGuard extension can: it reads where they go on your computer.",
+            ]
+          : [
+              "The full link stays on your device. Only the domain reaches our server: from ptt-kargo-odeme.example/track?no=123, only “ptt-kargo-odeme.example”.",
+              "The addresses you check are not stored. Short links (such as bit.ly) are the one exception: to see where one leads, we ask you before sending the short link itself.",
+            ],
       },
       {
         q: "What does the score mean?",
         a: [
           "It is a risk score from 0 to 100; the higher, the riskier. 0–39 means “Looks safe”, 40–69 “Be careful”, and 70 or more “Dangerous”.",
-          "It depends on whether the address is on known threat lists, how much its name looks like scam sites, how long the site has existed and whether it is a well-known site.",
+          "It depends on whether the address is on known threat lists, how much its name looks like the names of scam sites and whether it is a well-known site.",
         ],
       },
       {
@@ -38,23 +44,33 @@ const TEXT: Record<"en" | "tr", { title: string; items: { q: string; a: string[]
       {
         q: "What does the extension see and send?",
         a: [
-          "The extension checks only the domain of the sites you open. It never asks our server about well-known and official sites, and recognises known scam sites from the list stored inside it.",
+          "The extension checks the sites you open on your computer, with lists stored inside it that it refreshes from this site every few hours. The sites you visit are not sent anywhere.",
           "Form protection does not read or send what you type; on your device it only checks whether what you typed is a password, card number or ID number.",
         ],
       },
       {
         q: "How do short links on HookGuard work?",
-        a: [
-          "On the Short links page you can see where a short link leads before you click, or shorten a long link safely.",
-          "We check where a link leads before shortening it and refuse dangerous ones. Whoever opens a HookGuard short link first sees a safety summary of the destination.",
-        ],
+        a: ON_DEVICE
+          ? [
+              "On the Short links page you can see where a short link leads before you click. A web page cannot see that by itself, so the page asks the HookGuard extension, which reads it on your computer.",
+              "With the extension you also see where a short link leads when you hover over it on any site.",
+            ]
+          : [
+              "On the Short links page you can see where a short link leads before you click, or shorten a long link safely.",
+              "We check where a link leads before shortening it and refuse dangerous ones. Whoever opens a HookGuard short link first sees a safety summary of the destination.",
+            ],
       },
       {
         q: "What happens to the sites I report?",
-        a: [
-          "Every report is reviewed. Confirmed sites are added to the list so that other people are protected too.",
-          "We do not record who reported; we keep only the address, the type you chose and your note, if any.",
-        ],
+        a: ON_DEVICE
+          ? [
+              "Reports are collected on HookGuard's GitHub page, and every one is reviewed. Confirmed sites are added to the list so that other people are protected too.",
+              "A report there is public and shows your GitHub username, so do not write personal details in it.",
+            ]
+          : [
+              "Every report is reviewed. Confirmed sites are added to the list so that other people are protected too.",
+              "We do not record who reported; we keep only the address, the type you chose and your note, if any.",
+            ],
       },
       {
         q: "What is family mode?",
@@ -77,16 +93,21 @@ const TEXT: Record<"en" | "tr", { title: string; items: { q: string; a: string[]
       },
       {
         q: "Yapıştırdığım linke ne oluyor?",
-        a: [
-          "Linkin tamamı senin cihazında kalır. Sunucumuza yalnızca alan adı gider: örneğin ptt-kargo-odeme.example/takip?no=123 linkinden yalnızca “ptt-kargo-odeme.example”.",
-          "Kontrol ettiğin adresler kaydedilmez. Tek istisna kısa linklerdir (bit.ly gibi): nereye gittiğini görmek istersen kısa linki sunucuya göndermek için ayrıca onay isteriz.",
-        ],
+        a: ON_DEVICE
+          ? [
+              "Cihazından hiçbir şey çıkmaz. Kontrol, sayfanın bu siteden indirdiği listelerle tarayıcının içinde yapılır; hangi linkleri kontrol ettiğini kimse, biz de dahil, öğrenmez.",
+              "Kısa linkler (bit.ly gibi) nereye gittiklerini gizler ve bir web sayfası onları açmadan bunu göremez. HookGuard eklentisi görebilir: nereye gittiklerini senin bilgisayarında okur.",
+            ]
+          : [
+              "Linkin tamamı senin cihazında kalır. Sunucumuza yalnızca alan adı gider: örneğin ptt-kargo-odeme.example/takip?no=123 linkinden yalnızca “ptt-kargo-odeme.example”.",
+              "Kontrol ettiğin adresler kaydedilmez. Tek istisna kısa linklerdir (bit.ly gibi): nereye gittiğini görmek istersen kısa linki sunucuya göndermek için ayrıca onay isteriz.",
+            ],
       },
       {
         q: "Puan neyi gösterir?",
         a: [
           "0 ile 100 arasında bir risk puanıdır; yükseldikçe risk artar. 0–39 “Güvenli görünüyor”, 40–69 “Dikkatli ol”, 70 ve üstü “Tehlikeli” demektir.",
-          "Puan; adresin bilinen tehdit listelerinde olup olmadığına, dolandırıcılık sitelerinin adlarına ne kadar benzediğine, sitenin ne zamandır var olduğuna ve tanınmış bir site olup olmadığına göre hesaplanır.",
+          "Puan; adresin bilinen tehdit listelerinde olup olmadığına, dolandırıcılık sitelerinin adlarına ne kadar benzediğine ve tanınmış bir site olup olmadığına göre hesaplanır.",
         ],
       },
       {
@@ -99,23 +120,33 @@ const TEXT: Record<"en" | "tr", { title: string; items: { q: string; a: string[]
       {
         q: "Eklenti neleri görüyor, neleri gönderiyor?",
         a: [
-          "Eklenti, açtığın sitelerin yalnızca alan adını kontrol eder. Tanınmış ve resmi sitelerde sunucuya hiç sormaz; bilinen dolandırıcılık sitelerini de kendi içindeki listeyle tanır.",
+          "Eklenti, açtığın siteleri kendi içindeki listelerle senin bilgisayarında kontrol eder; bu listeleri birkaç saatte bir bu siteden yeniler. Ziyaret ettiğin siteler hiçbir yere gönderilmez.",
           "Form koruması yazdıklarını okumaz ve göndermez; yalnızca yazılanın bir şifre, kart numarası ya da TC kimlik numarası olup olmadığına cihazında bakar.",
         ],
       },
       {
         q: "HookGuard'da kısa linkler nasıl çalışır?",
-        a: [
-          "Kısa linkler sayfasında bir kısa linkin tıklamadan nereye gittiğini görebilir ya da uzun bir linki güvenle kısaltabilirsin.",
-          "Kısaltmadan önce linkin nereye gittiğine bakar, tehlikeli olanları kısaltmayız. HookGuard kısa linkini açan kişi önce gideceği sitenin güvenlik özetini görür.",
-        ],
+        a: ON_DEVICE
+          ? [
+              "Kısa linkler sayfasında bir kısa linkin tıklamadan nereye gittiğini görebilirsin. Bir web sayfası bunu tek başına göremediği için sayfa, bunu senin bilgisayarında okuyan HookGuard eklentisine sorar.",
+              "Eklentiyle, herhangi bir sitede kısa linkin üstüne geldiğinde de nereye gittiğini görürsün.",
+            ]
+          : [
+              "Kısa linkler sayfasında bir kısa linkin tıklamadan nereye gittiğini görebilir ya da uzun bir linki güvenle kısaltabilirsin.",
+              "Kısaltmadan önce linkin nereye gittiğine bakar, tehlikeli olanları kısaltmayız. HookGuard kısa linkini açan kişi önce gideceği sitenin güvenlik özetini görür.",
+            ],
       },
       {
         q: "Bildirdiğim sitelere ne oluyor?",
-        a: [
-          "Her bildirim incelenir. Onaylanan siteler listeye eklenir ve diğer kullanıcılar da korunur.",
-          "Bildirim yaparken kim olduğun kaydedilmez; yalnızca adres, seçtiğin tür ve varsa notun saklanır.",
-        ],
+        a: ON_DEVICE
+          ? [
+              "Bildirimler HookGuard'ın GitHub sayfasında toplanır ve her biri incelenir. Onaylanan siteler listeye eklenir ve diğer kullanıcılar da korunur.",
+              "Oradaki bildirim herkese açıktır ve GitHub kullanıcı adını gösterir; bu yüzden içine kişisel bilgi yazma.",
+            ]
+          : [
+              "Her bildirim incelenir. Onaylanan siteler listeye eklenir ve diğer kullanıcılar da korunur.",
+              "Bildirim yaparken kim olduğun kaydedilmez; yalnızca adres, seçtiğin tür ve varsa notun saklanır.",
+            ],
       },
       {
         q: "Aile modu nedir?",

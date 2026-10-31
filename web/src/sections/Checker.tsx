@@ -1,15 +1,7 @@
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { motion, useReducedMotion } from "motion/react";
 
-import {
-  ApiError,
-  checkDomain,
-  expandLink,
-  extractHost,
-  isShortLink,
-  reportSite,
-  type CheckResult,
-} from "@shared/hookguard";
+import { ApiError, extractHost, isShortLink, type CheckResult } from "@shared/hookguard";
 import { useContent, useLang } from "@shared/ui/i18n";
 import {
   IconAnalyze,
@@ -24,7 +16,8 @@ import {
 import { ReportForm } from "@shared/ui/ReportForm";
 import { ResultView } from "@shared/ui/ResultView";
 
-export const API_BASE: string = import.meta.env.VITE_API_BASE ?? "";
+import { ON_DEVICE, checkHost, expandShortLink, report } from "../checks";
+import { extensionInstalled } from "../extension";
 const MIN_LOADING_MS = 400;
 
 // Made-up addresses on the reserved .example domain (they can never be real sites) and one official site.
@@ -40,19 +33,25 @@ const TEXT = {
     submit: "Check",
     checking: "Checking…",
     sending: "Only this will be sent:",
+    onDevice: "The check runs in your browser: the link is not sent anywhere.",
     examples: "Try an example:",
     examplesNote: "Addresses ending in “.example” are not real; they are made up for trying the checker.",
     shortTitle: "This is a shortened link",
     shortBody: (host: string) =>
       `Services like ${host} hide the real address. To see where it leads, the whole short link has to be sent to our server. We never open the destination; we only learn its name and check it.`,
     shortButton: "Show where it leads",
+    shortWithExtension: (host: string) =>
+      `Services like ${host} hide the real address. Your HookGuard extension can read where it leads without opening the site.`,
+    shortNoExtension: (host: string) =>
+      `Services like ${host} hide the real address, and a web page cannot see where it leads without opening it. The HookGuard extension can: it reads where the link goes and checks that site before you get there.`,
+    shortGetExtension: "Get the extension",
     via: (short: string) => `The short link ${short} leads to:`,
     report: "Report this site",
     reportLow: "Report it if it seems suspicious",
     notLink: "This does not look like a web address. Try pasting the link exactly as you received it.",
     tooMany: "Too many checks. Please try again in a minute.",
     failed: "We cannot check right now. Please try again in a little while.",
-    offline: "Could not reach the server. Check your internet connection and try again.",
+    offline: "Could not connect. Check your internet connection and try again.",
     noDestination: "We could not find where this short link leads. Ask the person who sent it before you click.",
     phone: {
       label: "Example: a scam text message that HookGuard marks as dangerous",
@@ -72,19 +71,25 @@ const TEXT = {
     submit: "Kontrol et",
     checking: "Kontrol ediliyor…",
     sending: "Gönderilecek olan yalnızca:",
+    onDevice: "Kontrol tarayıcının içinde yapılır: link hiçbir yere gönderilmez.",
     examples: "Örnek dene:",
     examplesNote: "“.example” ile biten adresler gerçek değildir; denemen için uydurulmuştur.",
     shortTitle: "Bu kısaltılmış bir link",
     shortBody: (host: string) =>
       `${host} gibi servisler asıl adresi gizler. Nereye gittiğini görmek için kısa linkin tamamını sunucumuza göndermemiz gerekiyor. Gideceği siteyi açmayız; yalnızca adını öğrenip kontrol ederiz.`,
     shortButton: "Nereye gittiğini göster",
+    shortWithExtension: (host: string) =>
+      `${host} gibi servisler asıl adresi gizler. HookGuard eklentin, siteyi açmadan nereye gittiğini okuyabilir.`,
+    shortNoExtension: (host: string) =>
+      `${host} gibi servisler asıl adresi gizler ve bir web sayfası, linki açmadan nereye gittiğini göremez. HookGuard eklentisi görebilir: linkin nereye gittiğini okur ve sen oraya varmadan o siteyi kontrol eder.`,
+    shortGetExtension: "Eklentiyi edin",
     via: (short: string) => `${short} kısa linki şu adrese gidiyor:`,
     report: "Bu siteyi bildir",
     reportLow: "Şüpheliyse bildir",
     notLink: "Bu bir web adresine benzemiyor. Linki olduğu gibi yapıştırmayı dene.",
     tooMany: "Çok fazla kontrol yapıldı. Bir dakika sonra yeniden dene.",
     failed: "Şu an kontrol edemiyoruz. Biraz sonra yeniden dene.",
-    offline: "Sunucuya ulaşılamadı. İnternet bağlantını kontrol edip yeniden dene.",
+    offline: "Bağlanılamadı. İnternet bağlantını kontrol edip yeniden dene.",
     noDestination: "Bu kısa linkin nereye gittiğini bulamadık. Tıklamadan önce linki gönderen kişiye sor.",
     phone: {
       label: "Örnek: HookGuard'ın tehlikeli diye işaretlediği dolandırıcı bir SMS",
@@ -101,7 +106,7 @@ type Text = (typeof TEXT)["en"];
 type State =
   | { status: "idle" }
   | { status: "loading"; host: string }
-  | { status: "short"; link: string; host: string }
+  | { status: "short"; link: string; host: string; extension: boolean }
   | { status: "done"; result: CheckResult; via?: string }
   | { status: "error"; message: string };
 
@@ -185,24 +190,25 @@ export function Checker() {
     setReporting(false);
     setState({ status: "loading", host: target });
     try {
-      const result = await atLeast(checkDomain(API_BASE, target, { lang, signal: controller.signal }));
+      const result = await atLeast(checkHost(target, lang, controller.signal));
       setState({ status: "done", result, via });
     } catch (err) {
       if (!controller.signal.aborted) setState({ status: "error", message: errorMessage(t, err) });
     }
   }
 
-  function start(text: string) {
+  async function start(text: string) {
     const target = extractHost(text);
     if (!target) return setState({ status: "error", message: t.notLink });
-    if (isShortLink(target)) setState({ status: "short", link: text.trim(), host: target });
-    else void check(target);
+    if (!isShortLink(target)) return void check(target);
+    const extension = ON_DEVICE && (await extensionInstalled());
+    setState({ status: "short", link: text.trim(), host: target, extension });
   }
 
   async function followShortLink(link: string, short: string) {
     setState({ status: "loading", host: short });
     try {
-      const { destination } = await atLeast(expandLink(API_BASE, link));
+      const destination = await atLeast(expandShortLink(link));
       if (destination) await check(destination, short);
       else setState({ status: "error", message: t.noDestination });
     } catch (err) {
@@ -212,13 +218,13 @@ export function Checker() {
 
   function onChange(e: ChangeEvent<HTMLInputElement>) {
     setInput(e.target.value);
-    if (pasted.current && extractHost(e.target.value)) start(e.target.value); // a pasted link is checked at once
+    if (pasted.current && extractHost(e.target.value)) void start(e.target.value); // a pasted link is checked at once
     pasted.current = false;
   }
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
-    start(input);
+    void start(input);
   }
 
   const loading = state.status === "loading";
@@ -296,8 +302,8 @@ export function Checker() {
             <p className="hg-note privacy-note" id="privacy-note">
               <IconLock aria-hidden="true" />
               <span>
-                {c.privacyNote}
-                {host && !isShortLink(host) && (
+                {ON_DEVICE ? t.onDevice : c.privacyNote}
+                {!ON_DEVICE && host && !isShortLink(host) && (
                   <>
                     {" "}
                     {t.sending} <strong className="mono">{host}</strong>
@@ -314,7 +320,7 @@ export function Checker() {
                   className="hg-chip mono"
                   onClick={() => {
                     setInput(example);
-                    start(example);
+                    void start(example);
                   }}
                 >
                   {example}
@@ -348,11 +354,19 @@ export function Checker() {
               <IconLink aria-hidden="true" />
               {t.shortTitle}
             </h2>
-            <p>{t.shortBody(state.host)}</p>
+            <p>
+              {!ON_DEVICE ? t.shortBody(state.host) : state.extension ? t.shortWithExtension(state.host) : t.shortNoExtension(state.host)}
+            </p>
             <div className="hg-actions">
-              <button type="button" className="hg-btn hg-btn--primary" onClick={() => void followShortLink(state.link, state.host)}>
-                {t.shortButton}
-              </button>
+              {ON_DEVICE && !state.extension ? (
+                <a className="hg-btn hg-btn--primary" href="#install">
+                  {t.shortGetExtension}
+                </a>
+              ) : (
+                <button type="button" className="hg-btn hg-btn--primary" onClick={() => void followShortLink(state.link, state.host)}>
+                  {t.shortButton}
+                </button>
+              )}
             </div>
           </div>
         )}
@@ -381,7 +395,8 @@ export function Checker() {
                 <h3 className="hg-subtitle">{c.report.title}</h3>
                 <ReportForm
                   domain={state.result.domain}
-                  onSubmit={(category, note) => reportSite(API_BASE, { domain: state.result.domain, category, note, source: "web" })}
+                  onGitHub={ON_DEVICE}
+                  onSubmit={(category, note) => report(state.result.domain, category, note)}
                 />
               </div>
             )}

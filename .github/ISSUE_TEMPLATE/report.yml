@@ -1,0 +1,26 @@
+name: Report a site
+description: A scam, illegal betting or other harmful site, or a site HookGuard got wrong.
+title: "Report: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping. Every report is reviewed before it reaches other people.
+        This page is public: do not write names, phone numbers, card or account details.
+  - type: input
+    id: domain
+    attributes:
+      label: Domain
+      description: Only the site's name, such as ptt-kargo-odeme.example
+    validations:
+      required: true
+  - type: input
+    id: category
+    attributes:
+      label: What kind of site is it?
+      description: "phishing, gambling, investment, shopping, tech_support, adult, false_positive (HookGuard got it wrong) or other"
+  - type: textarea
+    id: note
+    attributes:
+      label: Note (optional)
+      description: For example “came by SMS”.

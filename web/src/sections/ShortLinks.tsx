@@ -1,23 +1,29 @@
-import { useRef, useState, type FormEvent, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import { motion, useReducedMotion } from "motion/react";
 
-import { expandLink, extractHost, isShortLink, openShortLink, shortenLink, checkDomain, type CheckResult } from "@shared/hookguard";
+import { extractHost, isShortLink, openShortLink, shortenLink, type CheckResult } from "@shared/hookguard";
 import { useLang } from "@shared/ui/i18n";
 import { IconCheck, IconCopy, IconExternal, IconLink, IconLinkDuo, IconLock, IconReasonDanger, IconScissors } from "@shared/ui/icons";
 import { ResultView, StatusBand } from "@shared/ui/ResultView";
 import { displayLevel } from "@shared/content";
 
-import { API_BASE, atLeast, errorMessage } from "./Checker";
+import { API_BASE, ON_DEVICE, checkHost, expandShortLink } from "../checks";
+import { extensionInstalled } from "../extension";
+import { href } from "../paths";
+import { atLeast, errorMessage } from "./Checker";
 
 const TEXT = {
   en: {
     eyebrow: "Short links",
     title: ["Short links,", "without surprises."],
     lead: "See where a short link really goes before you tap it, or make your own short link that shows a safety check to everyone who opens it.",
+    leadDevice: "See where a short link really goes before you tap it.",
     tabs: { expand: "Expand a short link", shorten: "Shorten safely" },
     expandLabel: "Paste a short link (bit.ly, t.co, tinyurl…)",
     expandButton: "Show where it goes",
     expandNote: "To see where it leads, the short link itself is sent to our server. We only read the redirect; the destination site is never opened.",
+    expandNoteExtension: "Your HookGuard extension reads where the link leads. The destination site is never opened, and nothing is sent to us.",
+    needsExtension: ["A web page cannot see where a short link leads without opening it. The HookGuard extension can: ", "add it", ", then paste the link here again."],
     notShort: "This is not a short link. Paste it on the home page to check it directly.",
     goesTo: "This short link goes to:",
     noDestination: "We could not find where this short link leads. Ask the person who sent it before you tap it.",
@@ -34,7 +40,7 @@ const TEXT = {
     notLink: "This does not look like a web address. Try pasting the link exactly as you received it.",
     tooMany: "Too many requests. Please try again in a minute.",
     failed: "We cannot do this right now. Please try again in a little while.",
-    offline: "Could not reach the server. Check your internet connection and try again.",
+    offline: "Could not connect. Check your internet connection and try again.",
     working: "Working…",
     why: [
       ["Why are short links risky?", "Short links hide the real address. Scammers use them so you cannot see that “ptt-kargo” is not the real courier until it is too late."],
@@ -45,10 +51,13 @@ const TEXT = {
     eyebrow: "Kısa linkler",
     title: ["Kısa linkler,", "sürprizsiz."],
     lead: "Bir kısa linkin gerçekte nereye gittiğini dokunmadan önce gör ya da açan herkese önce güvenlik kontrolü gösteren kendi kısa linkini oluştur.",
+    leadDevice: "Bir kısa linkin gerçekte nereye gittiğini dokunmadan önce gör.",
     tabs: { expand: "Kısa link aç", shorten: "Güvenle kısalt" },
     expandLabel: "Kısa linki yapıştır (bit.ly, t.co, tinyurl…)",
     expandButton: "Nereye gittiğini göster",
     expandNote: "Nereye gittiğini görmek için kısa linkin kendisi sunucumuza gönderilir. Yalnızca yönlendirmeyi okuruz; gideceği site açılmaz.",
+    expandNoteExtension: "Linkin nereye gittiğini HookGuard eklentin okur. Gideceği site açılmaz ve bize hiçbir şey gönderilmez.",
+    needsExtension: ["Bir web sayfası, kısa linki açmadan nereye gittiğini göremez. HookGuard eklentisi görebilir: ", "eklentiyi ekle", ", sonra linki buraya yeniden yapıştır."],
     notShort: "Bu bir kısa link değil. Doğrudan kontrol etmek için ana sayfaya yapıştır.",
     goesTo: "Bu kısa link şuraya gidiyor:",
     noDestination: "Bu kısa linkin nereye gittiğini bulamadık. Dokunmadan önce linki gönderen kişiye sor.",
@@ -65,7 +74,7 @@ const TEXT = {
     notLink: "Bu bir web adresine benzemiyor. Linki olduğu gibi yapıştırmayı dene.",
     tooMany: "Çok fazla istek yapıldı. Bir dakika sonra yeniden dene.",
     failed: "Şu an yapamıyoruz. Biraz sonra yeniden dene.",
-    offline: "Sunucuya ulaşılamadı. İnternet bağlantını kontrol edip yeniden dene.",
+    offline: "Bağlanılamadı. İnternet bağlantını kontrol edip yeniden dene.",
     working: "Hazırlanıyor…",
     why: [
       ["Kısa linkler neden riskli?", "Kısa linkler asıl adresi gizler. Dolandırıcılar onları, “ptt-kargo”nun gerçek kargo firması olmadığını iş işten geçene kadar görmeyesin diye kullanır."],
@@ -93,22 +102,32 @@ function ExpandTab() {
   const t = TEXT[lang];
   const [input, setInput] = useState("");
   const [state, setState] = useState<Expanded>({ status: "idle" });
+  const [extension, setExtension] = useState<boolean | null>(ON_DEVICE ? null : false);
+
+  useEffect(() => {
+    if (ON_DEVICE) void extensionInstalled().then(setExtension);
+  }, []);
 
   async function submit(e: FormEvent) {
     e.preventDefault();
-    const code = ownCode(input);
+    const code = ON_DEVICE ? null : ownCode(input);
     const host = extractHost(input);
     if (!code && !isShortLink(host)) return setState({ status: "error", message: host ? t.notShort : t.notLink });
+    if (ON_DEVICE) {
+      const present = await extensionInstalled();
+      setExtension(present);
+      if (!present) return setState({ status: "idle" });
+    }
     setState({ status: "busy" });
     try {
       if (code) {
-        const link = await atLeast(openShortLink(API_BASE, code, lang));
+        const link = await atLeast(openShortLink(API_BASE ?? "", code, lang));
         setState({ status: "done", result: link.result });
         return;
       }
-      const { destination } = await atLeast(expandLink(API_BASE, input.trim()));
+      const destination = await atLeast(expandShortLink(input.trim()));
       if (!destination) return setState({ status: "error", message: t.noDestination });
-      setState({ status: "done", result: await checkDomain(API_BASE, destination, { lang }) });
+      setState({ status: "done", result: await checkHost(destination, lang) });
     } catch (err) {
       setState({ status: "error", message: errorMessage(t, err) });
     }
@@ -133,7 +152,17 @@ function ExpandTab() {
         </div>
         <p className="hg-note" id="expand-note">
           <IconLock aria-hidden="true" />
-          {t.expandNote}
+          {!ON_DEVICE ? (
+            t.expandNote
+          ) : extension === false ? (
+            <span>
+              {t.needsExtension[0]}
+              <a href={href("/#install")}>{t.needsExtension[1]}</a>
+              {t.needsExtension[2]}
+            </span>
+          ) : (
+            t.expandNoteExtension
+          )}
         </p>
       </form>
       {state.status === "error" && (
@@ -173,7 +202,7 @@ function ShortenTab() {
     setState({ status: "busy" });
     setCopied(false);
     try {
-      const made = await atLeast(shortenLink(API_BASE, input.trim(), lang));
+      const made = await atLeast(shortenLink(API_BASE ?? "", input.trim(), lang));
       setState({ status: "done", url: made.path ? `${location.origin}${made.path}` : null, result: made.result });
     } catch (err) {
       setState({ status: "error", message: errorMessage(t, err) });
@@ -282,37 +311,46 @@ export function ShortLinks() {
         <h1 id="short-title">
           {t.title[0]} <span className="hg-gradient-text">{t.title[1]}</span>
         </h1>
-        <p className="hero__lead">{t.lead}</p>
+        <p className="hero__lead">{ON_DEVICE ? t.leadDevice : t.lead}</p>
 
-        <div className="tool hg-glass hg-gradient-edge">
-          <div className="tabs" role="tablist" aria-label={t.eyebrow} onKeyDown={onKey}>
-            {(["expand", "shorten"] as Tab[]).map((key) => (
-              <button
-                key={key}
-                ref={(el) => {
-                  tabs.current[key] = el;
-                }}
-                type="button"
-                role="tab"
-                id={`tab-${key}`}
-                aria-selected={tab === key}
-                aria-controls={`panel-${key}`}
-                tabIndex={tab === key ? 0 : -1}
-                className="tabs__tab"
-                onClick={() => setTab(key)}
-              >
-                {key === "expand" ? <IconLinkDuo aria-hidden="true" /> : <IconScissors aria-hidden="true" />}
-                {t.tabs[key]}
-              </button>
-            ))}
+        {ON_DEVICE ? (
+          // The safe shortener needs an API to store links; on GitHub Pages there is only the expander.
+          <div className="tool hg-glass hg-gradient-edge">
+            <div className="tool__panel">
+              <ExpandTab />
+            </div>
           </div>
-          <div role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`} className="tool__panel">
-            {tab === "expand" ? <ExpandTab /> : <ShortenTab />}
+        ) : (
+          <div className="tool hg-glass hg-gradient-edge">
+            <div className="tabs" role="tablist" aria-label={t.eyebrow} onKeyDown={onKey}>
+              {(["expand", "shorten"] as Tab[]).map((key) => (
+                <button
+                  key={key}
+                  ref={(el) => {
+                    tabs.current[key] = el;
+                  }}
+                  type="button"
+                  role="tab"
+                  id={`tab-${key}`}
+                  aria-selected={tab === key}
+                  aria-controls={`panel-${key}`}
+                  tabIndex={tab === key ? 0 : -1}
+                  className="tabs__tab"
+                  onClick={() => setTab(key)}
+                >
+                  {key === "expand" ? <IconLinkDuo aria-hidden="true" /> : <IconScissors aria-hidden="true" />}
+                  {t.tabs[key]}
+                </button>
+              ))}
+            </div>
+            <div role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`} className="tool__panel">
+              {tab === "expand" ? <ExpandTab /> : <ShortenTab />}
+            </div>
           </div>
-        </div>
+        )}
 
         <div className="why-grid">
-          {t.why.map(([title, text]) => (
+          {t.why.slice(0, ON_DEVICE ? 1 : undefined).map(([title, text]) => (
             <div key={title} className="hg-card">
               <h2 className="hg-subtitle">{title}</h2>
               <p className="muted">{text}</p>

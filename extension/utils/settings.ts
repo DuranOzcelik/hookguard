@@ -11,6 +11,7 @@ import { DEFAULT_LANG, type Lang, type Palette } from "@shared/content";
 export type FamilyCategory = "gambling" | "adult";
 
 export interface Settings {
+  /** Your own HookGuard API; empty: check on this device. */
   apiBase: string;
   lang: Lang;
   palette: Palette;
@@ -24,7 +25,7 @@ export interface Settings {
   family: { enabled: boolean; blocked: FamilyCategory[]; pinHash: string | null; salt: string | null };
 }
 
-export const DEFAULT_API_BASE: string = import.meta.env.WXT_API_BASE ?? "http://127.0.0.1:8000";
+export const DEFAULT_API_BASE: string = import.meta.env.WXT_API_BASE ?? "";
 
 export const DEFAULTS: Settings = {
   apiBase: DEFAULT_API_BASE,
@@ -50,8 +51,9 @@ export async function getApiBase(): Promise<string> {
   return (await getSettings()).apiBase;
 }
 
-/** An http(s) origin, or the default. */
+/** An http(s) origin, empty for checks on this device, or else the default. */
 export function cleanApiBase(value: string): string {
+  if (!value.trim()) return "";
   try {
     const url = new URL(value.trim());
     if (url.protocol === "http:" || url.protocol === "https:") return url.origin;

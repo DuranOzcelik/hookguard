@@ -1,8 +1,8 @@
 /**
  * HookGuard client helpers, shared by the web app and the browser extension.
  *
- * They must agree with the API (backend/domains.py): only the host name ever leaves
- * the browser, and list hashes are the first 16 hex characters of SHA-256 over the
+ * They must agree with the API (backend/domains.py): only the host name ever goes to
+ * an API, and list hashes are the first 16 hex characters of SHA-256 over the
  * lowercase punycode host, checked for the host and each of its parents. The one
  * exception is expandLink, which the web page calls only when the user asks where a
  * short link leads.
@@ -210,6 +210,14 @@ export function reportSite(
   report: { domain: string; category: ReportCategory; note?: string; source: "web" | "extension" },
 ): Promise<{ status: string; domain: string }> {
   return post(apiBase, "/api/report", report);
+}
+
+export const REPO_URL = "https://github.com/DuranOzcelik/hookguard";
+
+/** A pre-filled GitHub issue for a report (.github/ISSUE_TEMPLATE/report.yml), when there is no API to send it to. */
+export function reportOnGitHub(domain: string, category: ReportCategory, note: string): string {
+  const query = new URLSearchParams({ template: "report.yml", title: `Report: ${domain}`, domain, category, note });
+  return `${REPO_URL}/issues/new?${query}`;
 }
 
 export interface Shortened {

@@ -2,7 +2,8 @@
 HookGuard - user reports
 
 "Report a suspicious site" (web page and extension) appends the domain, a category
-and an optional note to reports/reports.csv. No address, IP or browser detail of the
+and an optional note to reports/reports.csv when an API runs. Without one (GitHub Pages,
+the extension's default) a report is a GitHub issue instead, and `add` records a reviewed one. No address, IP or browser detail of the
 reporter is kept. Reports never reach users unreviewed: anyone could report a
 competitor, so each one waits until it is approved here, which moves it to
 data/community_blocklist.csv. The API picks that file up on its next start: scams
@@ -12,6 +13,7 @@ Usage:
     python -m backend.reports list              # pending reports, most reported first
     python -m backend.reports approve DOMAIN [--category phishing]
     python -m backend.reports reject DOMAIN
+    python -m backend.reports add DOMAIN --category gambling   # a report reviewed elsewhere (GitHub issue)
 """
 
 from __future__ import annotations
@@ -24,6 +26,7 @@ from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 
+from .domains import normalize_host
 from .references import COMMUNITY_CSV, ROOT
 
 REPORTS_CSV = Path("reports") / "reports.csv"  # not committed: unreviewed user input
@@ -76,11 +79,15 @@ def decide(domain: str, approve: bool, category: str | None, root: Path = ROOT) 
     _write(root / REPORTS_CSV, REPORT_FIELDS, reports)
     if approve:
         votes = Counter(r["category"] for r in mine if r["category"] not in ("false_positive", "other"))
-        chosen = category or (votes.most_common(1)[0][0] if votes else "phishing")
-        community = [r for r in _read(root / COMMUNITY_CSV) if r["domain"] != domain]
-        community.append({"domain": domain, "category": chosen, "approved_utc": utc_now(), "reports": len(mine)})
-        _write(root / COMMUNITY_CSV, COMMUNITY_FIELDS, community)
+        add(domain, category or (votes.most_common(1)[0][0] if votes else "phishing"), len(mine), root)
     return len(mine)
+
+
+def add(domain: str, category: str, reports: int = 1, root: Path = ROOT) -> None:
+    """Puts a reviewed domain on the community list (replacing an earlier entry)."""
+    community = [r for r in _read(root / COMMUNITY_CSV) if r["domain"] != domain]
+    community.append({"domain": domain, "category": category, "approved_utc": utc_now(), "reports": reports})
+    _write(root / COMMUNITY_CSV, COMMUNITY_FIELDS, community)
 
 
 def main() -> int:
@@ -92,7 +99,19 @@ def main() -> int:
     approve.add_argument("--category", choices=CATEGORIES[:6])
     reject = sub.add_parser("reject")
     reject.add_argument("domain")
+    added = sub.add_parser("add", help="a report reviewed elsewhere, such as a GitHub issue")
+    added.add_argument("domain")
+    added.add_argument("--category", choices=CATEGORIES[:6], default="phishing")
     args = parser.parse_args()
+
+    if args.command == "add":
+        host = normalize_host(args.domain)
+        if host is None:
+            print(f"Not a domain name: {args.domain}", file=sys.stderr)
+            return 1
+        add(host, args.category)
+        print(f"Added {host} ({args.category}); rebuild the data with python -m tools.build_static")
+        return 0
 
     if args.command == "list":
         pending = [r for r in _read(ROOT / REPORTS_CSV) if r["status"] == "pending"]

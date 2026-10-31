@@ -2,10 +2,11 @@
  * HookGuard background
  *
  * Navigation: every top-level navigation, and every redirect it goes through, is checked
- * locally first. A name on the known-threat hash list is stopped before the page loads; a
- * name on the allowlist passes without asking anyone. Other hosts go to the API as a bare
- * name (never the path or query). A first check of a new domain can take a second or two,
- * so a page the API rates high may start loading before the warning replaces it.
+ * against the local lists first. A name on the known-threat hash list is stopped before the
+ * page loads; a name on the allowlist passes. Other hosts get the full check, on this device
+ * (shared/engine) unless you set your own API, which then receives the bare name (never the
+ * path or query) and adds DNS and registration dates; with an API, a first check can take a
+ * second or two, so a page it rates high may start loading before the warning replaces it.
  *
  * Also here: family mode (PIN-locked categories), the download check (risky files such as
  * .apk are paused until the user decides), short-link expansion without contacting the
@@ -16,8 +17,18 @@ import { browser } from "wxt/browser";
 import { defineBackground } from "wxt/utils/define-background";
 
 import { CONTENT } from "@shared/content";
-import { SHORTENERS, checkDomain, extractHost, isIp, isShortLink, reportSite, type Level } from "@shared/hookguard";
-import { listStatus, matchList, refreshLists } from "@/utils/lists";
+import {
+  SHORTENERS,
+  checkDomain,
+  extractHost,
+  isIp,
+  isShortLink,
+  reportOnGitHub,
+  reportSite,
+  type Level,
+} from "@shared/hookguard";
+import { getEngine } from "@/utils/data";
+import { getLists, listStatus, matchList, refreshLists } from "@/utils/lists";
 import type { Api, PageSignal, Request, ShowVerdict, Status } from "@/utils/messages";
 import { cleanApiBase, getSettings, hashPin, newSalt, pinMatches, writeSettings } from "@/utils/settings";
 import { closeWeek, count, getStats } from "@/utils/stats";
@@ -32,6 +43,7 @@ import {
   isTrusted,
   rememberVerdict,
   trust,
+  unproven,
   type Verdict,
 } from "@/utils/verdicts";
 
@@ -65,20 +77,23 @@ function checkableHost(url: string, apiBase: string): string | null {
 const warningUrl = (params: Record<string, string>) =>
   `${browser.runtime.getURL("/warning.html")}?${new URLSearchParams(params)}`;
 
-async function askApi(host: string): Promise<Verdict | null> {
+/** The full check: on this device, or with your own API if one is set. */
+async function fullCheck(host: string): Promise<Verdict | null> {
   try {
     const settings = await getSettings();
-    const verdict = fromResult(await checkDomain(settings.apiBase, host, { lang: settings.lang }));
+    const verdict = settings.apiBase
+      ? fromResult(await checkDomain(settings.apiBase, host, { lang: settings.lang }), "api")
+      : fromResult(await (await getEngine()).check(host, await getLists(), settings.lang), "device");
     await rememberVerdict(verdict);
     apiError = null;
     return verdict;
   } catch (err) {
     apiError = err instanceof Error ? err.message : String(err);
-    return null; // fail open: an unreachable API must not break browsing
+    return null; // fail open: a check that fails must not break browsing
   }
 }
 
-/** Local lists first, then the session cache, then the API (one request per host at a time). */
+/** Local lists first, then the session cache, then the full check (one at a time per host). */
 async function verdictFor(host: string, fresh = false): Promise<Verdict | null> {
   if (!fresh) {
     const { lang } = await getSettings();
@@ -90,7 +105,7 @@ async function verdictFor(host: string, fresh = false): Promise<Verdict | null> 
   }
   let pending = inflight.get(host);
   if (!pending) {
-    pending = askApi(host).finally(() => inflight.delete(host));
+    pending = fullCheck(host).finally(() => inflight.delete(host));
     inflight.set(host, pending);
   }
   return pending;
@@ -204,9 +219,8 @@ async function inspectDownload(id: number, url: string, referrer: string | undef
   const verdict = host ? await verdictFor(host) : null;
   const allowlisted = verdict?.source === "allowlist";
   const level = verdict ? effectiveLevel(verdict, settings.categoryProtection) : "medium";
-  const young = verdict?.ageDays == null || verdict.ageDays < 180;
   // Banks and couriers never send apps as files: an .apk from anywhere but a well-known site is suspect.
-  const risky = ext === ".apk" ? !allowlisted : level !== "low" || (!allowlisted && young);
+  const risky = ext === ".apk" ? !allowlisted : level !== "low" || (!allowlisted && (!verdict || unproven(verdict)));
   if (!risky) return;
   await browser.downloads.pause(id).catch(() => {});
   await count("downloads");
@@ -228,7 +242,7 @@ async function status(): Promise<Status> {
 
 async function pageSignal(tabId: number | undefined, url: string, host: string, signal: PageSignal) {
   const verdict = await verdictFor(host);
-  if (!verdict || verdict.source !== "api") return { verdict };
+  if (!verdict || verdict.source === "blocklist" || verdict.source === "allowlist") return { verdict };
   const current = verdict.category;
   if (!current || CATEGORY_RANK[signal.confidence] > CATEGORY_RANK[current.confidence] || signal.id === "tech_support") {
     verdict.category = { ...signal, label: CONTENT[(await getSettings()).lang].categoryNotice[signal.id].title };
@@ -271,7 +285,10 @@ async function handle(request: Request, sender: Sender): Promise<Api[keyof Api][
     }
     case "report":
       try {
-        await reportSite((await getSettings()).apiBase, { ...request, source: "extension" });
+        const { apiBase } = await getSettings();
+        // Without an API a report is a GitHub issue; the form is filled in, the person sends it there.
+        if (apiBase) await reportSite(apiBase, { ...request, source: "extension" });
+        else await browser.tabs.create({ url: reportOnGitHub(request.domain, request.category, request.note) });
         return { ok: true };
       } catch {
         return { ok: false };
@@ -299,8 +316,7 @@ async function handle(request: Request, sender: Sender): Promise<Api[keyof Api][
       if (!verdict || verdict.source === "allowlist" || verdict.details?.official_brand || verdict.details?.tranco_rank)
         return { warn: false, verdict };
       // Warn on risky sites, and on sites too new (or too unknown) to have earned trust.
-      const warn =
-        effectiveLevel(verdict, settings.categoryProtection) !== "low" || verdict.ageDays === null || verdict.ageDays < 180;
+      const warn = effectiveLevel(verdict, settings.categoryProtection) !== "low" || unproven(verdict);
       if (warn) await count("forms");
       return { warn, verdict };
     }

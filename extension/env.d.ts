@@ -1,6 +1,8 @@
 interface ImportMetaEnv {
   /** The HookGuard API address baked into a build, e.g. WXT_API_BASE=https://api.example.org npm run build */
   readonly WXT_API_BASE?: string;
+  /** Where the check data is published (tools/build_static.py), if not the HookGuard site. */
+  readonly WXT_LISTS_URL?: string;
 }
 
 // Raw SVG strings for the small in-page elements (content/inline.ts). Named one by one: a

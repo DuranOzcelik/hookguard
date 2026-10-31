@@ -51,7 +51,7 @@ def extra_features(domains: list[str]) -> csr_matrix:
 class Stage1:
     def __init__(self):
         self.vec = TfidfVectorizer(analyzer="char", ngram_range=(2, 5), min_df=2, sublinear_tf=True,
-                                   max_features=300_000)
+                                   max_features=50_000)
         self.clf = LogisticRegression(C=4, max_iter=2000, class_weight="balanced")
         self.threshold = 0.5
 

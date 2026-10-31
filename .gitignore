@@ -25,3 +25,8 @@ data/usom_fetch_log.csv
 # Editors
 .vscode/
 .idea/
+
+# Built by tools/build_static.py
+build/
+web/public/data/
+extension/public/data/

@@ -6,14 +6,19 @@ import { IconFlag, IconReasonDanger, IconReasonSafe } from "./icons";
 
 type State = "idle" | "sending" | "done" | "error";
 
-/** "Report a suspicious site": a category, an optional note, nothing about the person reporting. */
+/**
+ * "Report a suspicious site": a category, an optional note, nothing about the person reporting.
+ * With onGitHub, onSubmit opens a pre-filled GitHub issue instead of sending the report.
+ */
 export function ReportForm({
   domain,
   initial = "phishing",
+  onGitHub = false,
   onSubmit,
 }: {
   domain: string;
   initial?: ReportCategory;
+  onGitHub?: boolean;
   onSubmit: (category: ReportCategory, note: string) => Promise<unknown>;
 }) {
   const c = useContent();
@@ -38,7 +43,7 @@ export function ReportForm({
     return (
       <p className="hg-note tone-safe" role="status">
         <IconReasonSafe aria-hidden="true" />
-        {t.done}
+        {onGitHub ? t.github.done : t.done}
       </p>
     );
   }
@@ -83,10 +88,11 @@ export function ReportForm({
           {t.failed}
         </p>
       )}
+      {onGitHub && <p className="hg-note">{t.github.hint}</p>}
       <div className="hg-actions">
         <button className="hg-btn hg-btn--primary" type="submit" disabled={state === "sending"}>
           <IconFlag aria-hidden="true" />
-          {state === "sending" ? t.sending : t.submit}
+          {state === "sending" ? t.sending : onGitHub ? t.github.submit : t.submit}
         </button>
       </div>
     </form>

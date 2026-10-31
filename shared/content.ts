@@ -44,6 +44,8 @@ export interface Content {
     sending: string;
     done: string;
     failed: string;
+    /** Without an API, a report is a public GitHub issue that the form fills in. */
+    github: { hint: string; submit: string; done: string };
   };
   ui: {
     why: string;
@@ -214,6 +216,11 @@ const en: Content = {
     sending: "Sending…",
     done: "Thank you. We will review your report; if it is confirmed, other people will be protected from this site too.",
     failed: "The report could not be sent. Please try again in a little while.",
+    github: {
+      hint: "Reports are collected on GitHub, where everyone can see them; you need a free GitHub account to send one.",
+      submit: "Continue on GitHub",
+      done: "We opened your report on GitHub. Press “Create” there to send it; we review every report.",
+    },
   },
   ui: {
     why: "Why?",
@@ -405,6 +412,11 @@ const tr: Content = {
     sending: "Gönderiliyor…",
     done: "Teşekkürler. Bildirimini inceleyeceğiz; onaylanırsa diğer kullanıcılar da bu siteye karşı korunur.",
     failed: "Bildirim gönderilemedi. Biraz sonra yeniden dene.",
+    github: {
+      hint: "Bildirimler herkesin görebildiği GitHub'da toplanır; göndermek için ücretsiz bir GitHub hesabı gerekir.",
+      submit: "GitHub'da devam et",
+      done: "Bildirimini GitHub'da açtık. Göndermek için oradaki “Create” düğmesine bas; her bildirimi inceleriz.",
+    },
   },
   ui: {
     why: "Neden?",

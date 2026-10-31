@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import type { Lang } from "@shared/content";
 import { LangProvider } from "@shared/ui/i18n";
 
+import { ON_DEVICE } from "./checks";
+import { route } from "./paths";
 import { applyLang, savedLang } from "./prefs";
 import { Checker } from "./sections/Checker";
 import { ExtensionSection } from "./sections/ExtensionSection";
@@ -20,11 +22,11 @@ const TITLE: Record<Lang, string> = {
 };
 const SKIP: Record<Lang, string> = { en: "Skip to content", tr: "İçeriğe geç" };
 
-/** Three pages, chosen by path: the checker, /short-links, and /s/CODE (a short link's preview). */
+/** Three pages, chosen by path: the checker, /short-links, and /s/CODE (a short link's preview, with an API only). */
 function Page() {
-  const path = location.pathname.replace(/\/+$/, "");
+  const path = route();
   const code = path.match(/^\/s\/([A-Za-z0-9]{7})$/)?.[1];
-  if (code) return <ShortPreview code={code} />;
+  if (code && !ON_DEVICE) return <ShortPreview code={code} />;
   if (path === "/short-links") return <ShortLinks />;
   return (
     <>

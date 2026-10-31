@@ -10,6 +10,7 @@
  * - Page signals: illegal betting and fake investment phrases, shops without ETBİS,
  *   fake "virus found" screens.
  * - Short-link preview and, in Gmail, Outlook and WhatsApp Web, link badges.
+ * - On the HookGuard web page, answers where a short link leads (site.ts).
  */
 
 import { createRoot, type Root } from "react-dom/client";
@@ -31,6 +32,7 @@ import "./content.css";
 import { FormWarning } from "./FormWarning";
 import { BADGE_SITES, installLinkBadges, installShortLinkPreview } from "./links";
 import { calmPage, gamblingSignal, investmentSignal, pageText, shoppingSignal, techSupportSignal } from "./signals";
+import { answerSite } from "./site";
 
 type Ui = ShadowRootContentScriptUi<Root>;
 
@@ -84,6 +86,7 @@ export default defineContentScript({
   cssInjectionMode: "ui",
 
   async main(ctx) {
+    answerSite(ctx.signal); // before the host check: the dev server is on localhost
     const host = extractHost(location.href);
     if (!host) return;
     const settings = await getSettings();

@@ -51,13 +51,15 @@ const TEXT = {
     pinWrong: "Changing this needs the parent PIN, or the PIN is wrong.",
     pinShape: "The PIN must be 4 to 8 digits.",
     pinDiffer: "The two PINs are not the same.",
-    server: "Server",
+    server: "Lists and checks",
     lists: (bad: string, good: string, when: string) => `Local list: ${bad} known scam addresses, ${good} well-known sites.${when ? ` Updated ${when}.` : ""}`,
-    address: "Server address",
+    address: "Your own HookGuard server (optional)",
+    addressHint: "Leave it empty to check on this device. With your own server, the domains of the sites you open are sent to it, which adds how long a site has existed.",
+    addressPlaceholder: "Empty: on this device",
     save: "Save",
     refresh: "Update the list now",
     privacy: "Privacy",
-    privacyText: "HookGuard checks only the domain of the sites you open; it never asks the server about well-known sites or known scam sites. What you type into forms, page content and the weekly counts never leave this device.",
+    privacyText: "HookGuard checks the sites you open on this device. The sites you visit, what you type into forms, page content and the weekly counts never leave it. Every few hours it downloads the updated lists from the HookGuard site.",
   },
   tr: {
     title: "Ayarlar",
@@ -91,13 +93,15 @@ const TEXT = {
     pinWrong: "Değişiklik için ebeveyn PIN'i gerekli ya da PIN yanlış.",
     pinShape: "PIN 4 ile 8 rakam arasında olmalı.",
     pinDiffer: "İki PIN aynı değil.",
-    server: "Sunucu",
+    server: "Listeler ve kontrol",
     lists: (bad: string, good: string, when: string) => `Yerel liste: ${bad} bilinen dolandırıcılık adresi, ${good} tanınmış site.${when ? ` Son güncelleme: ${when}.` : ""}`,
-    address: "Sunucu adresi",
+    address: "Kendi HookGuard sunucun (isteğe bağlı)",
+    addressHint: "Bu cihazda kontrol etmek için boş bırak. Kendi sunucunu yazarsan açtığın sitelerin alan adları oraya gönderilir; bu, sitenin ne zamandır var olduğunu da ekler.",
+    addressPlaceholder: "Boş: bu cihazda",
     save: "Kaydet",
     refresh: "Listeyi şimdi güncelle",
     privacy: "Gizlilik",
-    privacyText: "HookGuard açtığın sitelerin yalnızca alan adını kontrol eder; tanınmış sitelerde ve bilinen dolandırıcılık sitelerinde sunucuya hiç sormaz. Formlara yazdıkların, sayfaların içeriği ve haftalık sayılar bu cihazdan çıkmaz.",
+    privacyText: "HookGuard açtığın siteleri bu cihazda kontrol eder. Ziyaret ettiğin siteler, formlara yazdıkların, sayfaların içeriği ve haftalık sayılar bu cihazdan çıkmaz. Güncel listeleri birkaç saatte bir HookGuard sitesinden indirir.",
   },
 };
 
@@ -299,11 +303,15 @@ export default function App() {
             {t.address}
           </label>
           <div className="pin-form__row">
-            <input id="api" className="hg-input mono" value={api} onChange={(e) => setApi(e.target.value)} spellCheck={false} />
+            <input id="api" className="hg-input mono" value={api} onChange={(e) => setApi(e.target.value)} spellCheck={false}
+              placeholder={t.addressPlaceholder} aria-describedby="api-hint" />
             <button type="submit" className="hg-btn hg-btn--secondary">
               {t.save}
             </button>
           </div>
+          <p id="api-hint" className="fine">
+            {t.addressHint}
+          </p>
         </form>
         <div className="hg-actions">
           <button type="button" className="hg-btn hg-btn--secondary" onClick={() => void ask("refresh-lists").then(setStatus)}>

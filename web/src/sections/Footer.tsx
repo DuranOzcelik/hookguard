@@ -1,14 +1,17 @@
 import { useContent, useLang } from "@shared/ui/i18n";
 import { Logo } from "@shared/ui/Logo";
 
+import { ON_DEVICE } from "../checks";
+
 const REPO = "https://github.com/DuranOzcelik/hookguard";
 
 const TEXT = {
   en: {
     tagline: "Check before you click.",
     privacy: "Privacy",
-    privacyText:
-      "Only the domain is sent for a check; never the full link or your personal details. The addresses you check are not stored. We use no cookies or ad tracking.",
+    privacyText: ON_DEVICE
+      ? "Links are checked in your browser and never sent anywhere. We use no cookies or ad tracking."
+      : "Only the domain is sent for a check; never the full link or your personal details. The addresses you check are not stored. We use no cookies or ad tracking.",
     contact: "Contact",
     contactText: ["For questions, ideas or to report a wrong result, write to us on our ", "GitHub page", "."],
     licenses: "Licenses",
@@ -17,8 +20,9 @@ const TEXT = {
   tr: {
     tagline: "Tıklamadan önce emin ol.",
     privacy: "Gizlilik",
-    privacyText:
-      "Kontrol için yalnızca alan adı gönderilir; linkin tamamı ve kişisel bilgilerin gönderilmez. Kontrol ettiğin adresler kaydedilmez. Çerez ya da reklam takibi kullanmayız.",
+    privacyText: ON_DEVICE
+      ? "Linkler tarayıcının içinde kontrol edilir ve hiçbir yere gönderilmez. Çerez ya da reklam takibi kullanmayız."
+      : "Kontrol için yalnızca alan adı gönderilir; linkin tamamı ve kişisel bilgilerin gönderilmez. Kontrol ettiğin adresler kaydedilmez. Çerez ya da reklam takibi kullanmayız.",
     contact: "İletişim",
     contactText: ["Soru, öneri ya da yanlış bir sonucu bildirmek için ", "GitHub sayfamıza", " yazabilirsin."],
     licenses: "Lisanslar",

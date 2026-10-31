@@ -50,12 +50,15 @@ SHOPPING_WORDS = ("indirim", "outlet", "magaza", "satis", "sepet", "firsat", "uc
 ADULT_SUBSTRINGS = ("porn", "xvideo", "xhamster", "xnxx", "brazzers", "onlyfans", "hentai", "escort", "erotik")
 ADULT_TOKENS = {"sex", "xxx", "nude", "adult", "porno"}
 
+LABELS = {
+    "tr": {"gambling": "Yasadışı bahis sitesi", "investment": "Sahte yatırım sitesi olabilir",
+           "shopping": "Sahte alışveriş sitesi olabilir", "adult": "Yetişkin içerikli site"},
+    "en": {"gambling": "Illegal betting site", "investment": "Possible fake investment site",
+           "shopping": "Possible fake shop", "adult": "Adult site"},
+}
+# Reasons, by the code guess() returns.
 TEXT = {
     "tr": {
-        "gambling": "Yasadışı bahis sitesi",
-        "investment": "Sahte yatırım sitesi olabilir",
-        "shopping": "Sahte alışveriş sitesi olabilir",
-        "adult": "Yetişkin içerikli site",
         "gambling_brand": "Adında Türkiye'de izinsiz yayın yapan bir bahis markasının adı geçiyor.",
         "gambling_mirror": "Bahis sitelerinin kapatıldıkça numara değiştirerek açtığı yeni adreslere benziyor.",
         "gambling_word": "Adında bahis ve kumarla ilgili kelimeler var.",
@@ -65,10 +68,6 @@ TEXT = {
         "community": "Kullanıcılarımızın bildirdiği ve incelediğimiz siteler arasında.",
     },
     "en": {
-        "gambling": "Illegal betting site",
-        "investment": "Possible fake investment site",
-        "shopping": "Possible fake shop",
-        "adult": "Adult site",
         "gambling_brand": "The name contains a betting brand that operates in Turkey without a licence.",
         "gambling_mirror": "It looks like the numbered new addresses betting sites open as old ones are blocked.",
         "gambling_word": "The name contains betting and gambling words.",
@@ -133,5 +132,4 @@ def classify(host: str, refs: References, facts: Facts, lang: str = "tr") -> dic
     if found is None:
         return None
     category, confidence, code = found
-    text = TEXT[lang]
-    return {"id": category, "label": text[category], "confidence": confidence, "reasons": [text[code]]}
+    return {"id": category, "label": LABELS[lang][category], "confidence": confidence, "reasons": [TEXT[lang][code]]}

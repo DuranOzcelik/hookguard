@@ -1,14 +1,16 @@
 /**
- * The hash lists checked before anything is sent to the API: names USOM lists
- * (blocklist) and official or very popular domains (allowlist). They are kept in
- * storage.local, refreshed every few hours with If-None-Match, and held in memory
- * as sets while the background runs.
+ * The hash lists checked first: names USOM lists (blocklist) and official or very popular
+ * domains (allowlist). They come with the extension, are refreshed every few hours from the
+ * HookGuard site (or from your own API), kept in storage.local and held in memory as sets
+ * while the background runs.
  */
 
 import { browser } from "wxt/browser";
 
-import { matchHashes, type HashList } from "@shared/hookguard";
+import { hashSet, type BlockList, type HashSet, type Lists } from "@shared/engine";
+import { matchHashes } from "@shared/hookguard";
 
+import { DATA_URL, bundled, download, refreshEngine } from "./data";
 import { getApiBase } from "./settings";
 
 export type ListKind = "blocklist" | "allowlist";
@@ -18,6 +20,7 @@ interface StoredList {
   version: string;
   hex_chars: number;
   hashes: string[];
+  categories?: Record<string, string>;
 }
 
 export interface ListStatus {
@@ -26,14 +29,23 @@ export interface ListStatus {
   error: string | null;
 }
 
-const memory: Partial<Record<ListKind, { version: string; hexChars: number; hashes: Set<string> }>> = {};
+const memory: Partial<Record<ListKind, HashSet & { version: string }>> = {};
+
+function remember(kind: ListKind, list: StoredList) {
+  memory[kind] = { version: list.version, ...hashSet(list as BlockList) };
+}
 
 async function load(kind: ListKind) {
   if (!memory[kind]) {
     const stored = (await browser.storage.local.get(kind))[kind] as StoredList | undefined;
-    if (stored) memory[kind] = { version: stored.version, hexChars: stored.hex_chars, hashes: new Set(stored.hashes) };
+    const list = stored ?? (await bundled<StoredList>(`${kind}.json`));
+    if (list) remember(kind, list);
   }
   return memory[kind];
+}
+
+export async function getLists(): Promise<Lists> {
+  return { blocklist: (await load("blocklist")) ?? null, allowlist: (await load("allowlist")) ?? null };
 }
 
 /** The host or parent whose hash is on the list, or null. */
@@ -48,20 +60,16 @@ export async function refreshLists(): Promise<ListStatus> {
   for (const kind of KINDS) {
     try {
       const current = await load(kind);
-      const response = await fetch(`${apiBase}/api/${kind}`, {
-        headers: current ? { "If-None-Match": `"${current.version}"` } : {},
-        cache: "no-store",
-      });
-      if (response.status === 304) continue;
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const list: HashList = await response.json();
-      const stored: StoredList = { version: list.version, hex_chars: list.hex_chars, hashes: list.hashes };
+      const list = await download<StoredList>(apiBase ? `${apiBase}/api/${kind}` : `${DATA_URL}/${kind}.json`);
+      if (list.version === current?.version) continue;
+      const stored: StoredList = { version: list.version, hex_chars: list.hex_chars, hashes: list.hashes, categories: list.categories };
       await browser.storage.local.set({ [kind]: stored });
-      memory[kind] = { version: list.version, hexChars: list.hex_chars, hashes: new Set(list.hashes) };
+      remember(kind, stored);
     } catch (err) {
       errors.push(`${kind}: ${err instanceof Error ? err.message : err}`);
     }
   }
+  if (!apiBase) await refreshEngine().catch((err) => errors.push(`engine: ${err instanceof Error ? err.message : err}`));
   await browser.storage.local.set({ listsCheckedAt: Date.now(), listsError: errors.join("; ") || null });
   return listStatus();
 }

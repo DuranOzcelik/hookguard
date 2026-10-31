@@ -6,7 +6,7 @@ import { useLang } from "@shared/ui/i18n";
 import { IconBack, IconExternal, IconLinkDuo, IconReasonDanger } from "@shared/ui/icons";
 import { ResultView } from "@shared/ui/ResultView";
 
-import { API_BASE } from "./Checker";
+import { API_BASE } from "../checks";
 
 const TEXT = {
   en: {
@@ -42,7 +42,7 @@ export function ShortPreview({ code }: { code: string }) {
   const [state, setState] = useState<State>({ status: "loading" });
 
   useEffect(() => {
-    openShortLink(API_BASE, code, lang).then(
+    openShortLink(API_BASE ?? "", code, lang).then(
       (link) => setState({ status: "done", url: link.url, result: link.result }),
       (err) => setState({ status: "error", message: err instanceof ApiError && err.status === 404 ? t.missing : t.failed }),
     );
