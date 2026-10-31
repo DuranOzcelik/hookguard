@@ -16,6 +16,7 @@
 import { browser } from "wxt/browser";
 import { defineBackground } from "wxt/utils/define-background";
 
+import { SITE_ORIGINS } from "@shared/bridge";
 import { CONTENT } from "@shared/content";
 import {
   SHORTENERS,
@@ -64,9 +65,9 @@ let apiError: string | null = null;
 
 const PRIVATE_IP = /^(10\.|127\.|192\.168\.|169\.254\.|172\.(1[6-9]|2\d|3[01])\.|0\.)|^(::1|f[cd][0-9a-f]{2}:|fe80:)/i;
 
-/** The host to check, or null for browser pages, local addresses and the API itself. */
+/** The host to check, or null for browser pages, local addresses, the API and HookGuard's own page. */
 function checkableHost(url: string, apiBase: string): string | null {
-  if (!/^https?:/i.test(url)) return null;
+  if (!/^https?:/i.test(url) || SITE_ORIGINS.some((origin) => url.startsWith(`${origin}/`))) return null;
   const host = extractHost(url);
   if (!host || host.endsWith(".local") || host.endsWith(".localhost")) return null;
   if (isIp(host) && PRIVATE_IP.test(host)) return null;

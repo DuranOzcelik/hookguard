@@ -19,6 +19,7 @@ import type { ContentScriptContext } from "wxt/utils/content-script-context";
 import { createShadowRootUi, type ShadowRootContentScriptUi } from "wxt/utils/content-script-ui/shadow-root";
 import { defineContentScript } from "wxt/utils/define-content-script";
 
+import { SITE_ORIGINS } from "@shared/bridge";
 import "@shared/design/tokens.css";
 import "@shared/design/components.css";
 import { extractHost, luhnValid, tcknValid } from "@shared/hookguard";
@@ -91,7 +92,9 @@ export default defineContentScript({
     if (!host) return;
     const settings = await getSettings();
     let verdict = await ask("verdict", { host });
-    const trustedSite = verdict?.source === "allowlist" || Boolean(verdict?.details?.official_brand);
+    // HookGuard's own page describes betting and investment scams in the very words the page signals look for.
+    const ownSite = SITE_ORIGINS.includes(location.origin);
+    const trustedSite = ownSite || verdict?.source === "allowlist" || Boolean(verdict?.details?.official_brand);
 
     // Banner
     let banner: Ui | null = null;
