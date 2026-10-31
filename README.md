@@ -218,18 +218,6 @@ The visual design follows `design-system/MASTER.md`. Components use only the tok
 
 HookGuard started as research on phishing in Turkey. Across 4,076 domains on USOM's list, 26% had a fresh TLS certificate, and for 98% of those the certificate appeared before the listing, a median of 19 hours earlier. That gap is what an early-warning tool can use. The research tooling (certificate-log listeners, crawlers) is not part of this repository; what is here is what people need to stay safe.
 
-## Türkçe
-
-HookGuard, SMS'le, WhatsApp'tan ya da e-postayla gelen şüpheli linkleri açmadan kontrol eden bir web sayfası ve tarayıcı eklentisidir. Sonucu "Güvenli görünüyor", "Dikkatli ol" ya da "Tehlikeli" olarak, nedenleri ve ne yapman gerektiğiyle birlikte sade bir dille söyler.
-
-- Eklenti, bilinen dolandırıcılık sitelerini açılmadan durdurur.
-- Şüpheli bir sitede şifre, kart ya da TC kimlik numarası yazmaya başladığında seni uyarır.
-- Sahte banka ve kargo uygulamalarının (.apk) indirilmesini durdurur.
-- Yasadışı bahis sitelerini tanır ve destek için Yeşilay 115'i gösterir.
-- Sunucuya yalnızca alan adı gider, linkin tamamı gitmez.
-
-Arayüz Türkçe ve İngilizce kullanılabilir; dil, sayfanın üstündeki EN/TR düğmesinden seçilir. Kurulum için yukarıdaki *Getting started* bölümüne bak.
-
 ## Credits
 
 Icons: [Solar](https://icon-sets.iconify.design/solar/) by 480 Design (CC BY 4.0). Fonts: Atkinson Hyperlegible by the Braille Institute and Bricolage Grotesque by Mathieu Triay (SIL OFL). Details are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
