@@ -256,3 +256,7 @@ Icons: [Solar](https://icon-sets.iconify.design/solar/) by 480 Design (CC BY 4.0
 Known threats come from [USOM](https://siberguvenlik.gov.tr/zararli-baglantilar), and popular sites from the [Tranco](https://tranco-list.eu) list.
 
 HookGuard helps; it is not a guarantee. When in doubt, do not enter your details: call the organisation on its official number.
+
+## License
+
+The code is under the [MIT License](LICENSE). The icons and fonts keep their own licenses, listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

@@ -1,6 +1,7 @@
 {
   "name": "hookguard",
   "private": true,
+  "license": "MIT",
   "description": "Web page and browser extension; the Python backend lives at the repository root",
   "workspaces": [
     "web",
