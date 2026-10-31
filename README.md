@@ -30,6 +30,25 @@ It comes in three parts:
 - **A browser extension** for Chrome, Edge and Firefox that stops dangerous sites before they open. It checks on your device too.
 - **An optional API** you can run yourself. It adds how long a site has existed and a safe link shortener.
 
+## Try it
+
+Paste any of these into the [web page](https://duranozcelik.github.io/hookguard/). They are made up: names ending in `.example` are reserved and can never be real sites, so they are safe to try anywhere.
+
+| Address | HookGuard says | Why |
+| --- | --- | --- |
+| `dhl-parcel-redelivery.example` | **Dangerous** | It is on the known-threat list. This address and `paypal-account-verify.example` are there on purpose, for testing, the way antivirus makers keep a harmless test file. |
+| `casino-bonus845.example` | **Dangerous**: illegal betting | A gambling word and a number at the end, as betting sites use when an old address is blocked |
+| `steam-gift-claim.example` | **Be careful** | A brand's name on a site that is not the brand's, and a name like those of scam sites |
+| `crypto-profit-daily.example` | **Be careful**: possible fake investment | Investment and profit words in the name |
+| `paypal.com` | **Looks safe** | PayPal's official site |
+
+With the extension installed, open these links and it stops them before they load:
+
+- [http://dhl-parcel-redelivery.example](http://dhl-parcel-redelivery.example/) shows the red warning page.
+- [http://casino-bonus845.example](http://casino-bonus845.example/) shows the illegal betting page, with a helpline.
+
+Without the extension your browser just says the site cannot be reached.
+
 ## What it looks like
 
 <table>
@@ -43,7 +62,7 @@ It comes in three parts:
   </tr>
   <tr>
     <td><img src="docs/images/extension-banner.webp" alt="An orange strip on top of a suspicious page"></td>
-    <td><img src="docs/images/short-links.webp" alt="The short links page with a safe short link and its check"></td>
+    <td><img src="docs/images/short-links.webp" alt="The short links page showing where a bit.ly link leads, and the check of that site"></td>
   </tr>
   <tr>
     <td><b>Be careful.</b> On suspicious pages an orange strip explains why, in a Shadow DOM the page cannot hide.</td>
@@ -91,7 +110,7 @@ A domain gets a score from 0 to 100. Below 40 it reads "Looks safe", 40 to 69 "B
 | On the known-threat list (USOM, Turkey's national CERT, plus reviewed user reports), or its parent domain is | at least 95 or 90 | yes |
 | It resolves to an IP address on that list | at least 85 | API only |
 | A machine-learning model of the name: character patterns of 4,400 phishing domains against 30,000 ordinary ones | up to 60 | yes |
-| A brand's name in a domain that is not the brand's; lure words such as "kampanya" or "hediye" | +10; +5 | yes |
+| A brand's name in a domain that is not the brand's; lure words of giveaway and campaign scams | +10; +5 | yes |
 | How long the domain has existed (RDAP, or WHOIS for `.tr`) | +20 if under a week old; −10 if over two years | API only |
 | A subdomain of a free hosting or dynamic DNS service; a bare IP address | +5; +25 | yes |
 | An official brand domain; one of the world's most visited sites | capped low | yes (top 10,000; the API knows the top 100,000) |
@@ -109,7 +128,7 @@ At the threshold it uses for alarms, the model catches about half of new phishin
 - Form protection, page signals and the weekly counts stay on the device.
 - To show where a short link leads, the extension asks the shortener (bit.ly, t.co, ...) for its redirect and never contacts the destination. The web page asks the extension, if it is installed.
 - Reports are GitHub issues, which are public; the form says so before it opens one.
-- With your own API, only the **domain** is sent, never the full link: from `ptt-kargo-odeme.example/track?no=123` the API receives `ptt-kargo-odeme.example`. It keeps queried domains in memory only. Its safe shortener stores the full link, because that is what a short link is.
+- With your own API, only the **domain** is sent, never the full link: from `dhl-parcel-redelivery.example/track?no=123` the API receives `dhl-parcel-redelivery.example`. It keeps queried domains in memory only. Its safe shortener stores the full link, because that is what a short link is.
 
 ## Getting started
 
@@ -218,6 +237,7 @@ The visual design follows `design-system/MASTER.md`. Components use only the tok
 
 ## Limitations
 
+- The name model learned from phishing aimed at Turkey. Lookalike names in other languages usually get "Be careful" rather than "Dangerous" until they are on the list.
 - In the browser there is no DNS and no registration date, so a brand-new scam site with an innocent-looking name can pass as "Looks safe" until it is on the list. Your own API adds those signals.
 - The lists are as fresh as the last push: the threat list is updated by hand with `tools/update_usom.py`.
 - The betting, investment and shop categories are rules, not trained models; there is no labelled data for them yet. The list of licensed Turkish betting sites (`LEGAL_BETTING` in `backend/categories.py`) must be kept current.

@@ -14,6 +14,9 @@ Loaded once at startup:
 - The stage 1 lexical model, if external/stage1.joblib is present.
 - Reviewed user reports (data/community_blocklist.csv, see reports.py): scams join the
   USOM names, betting and adult sites become category overrides.
+- TEST_ENTRIES: made-up names that are always on the known-threat list, so that anyone can
+  see a known scam stopped, as antivirus test files do. They end in the reserved .example,
+  so they can never be real sites.
 """
 
 from __future__ import annotations
@@ -37,6 +40,9 @@ USOM_CSV = Path("data") / "usom_seen.csv"
 BRANDS_CSV = Path("data") / "tr_brands.csv"
 COMMUNITY_CSV = Path("data") / "community_blocklist.csv"
 TRANCO_ZIP = Path("external") / "tranco" / "top-1m.csv.zip"
+
+# On the known-threat list on purpose, for trying HookGuard (README, the web page's examples).
+TEST_ENTRIES = ("dhl-parcel-redelivery.example", "paypal-account-verify.example")
 
 TRANCO_TOP = 100_000  # ranks kept for the popularity check
 ALLOW_TOP = 10_000    # popular domains the extension need not ask about
@@ -77,6 +83,8 @@ class References:
     @classmethod
     def load(cls, root: Path = ROOT) -> References:
         usom = read_usom(root / USOM_CSV)
+        for name in TEST_ENTRIES:
+            usom.setdefault(name, UsomEntry("test", name, "", "PH"))
         categories = read_community(root / COMMUNITY_CSV, usom)
         official = {d: d for d in OFFICIAL_DOMAINS if d not in USER_CONTENT}
         brands = root / BRANDS_CSV

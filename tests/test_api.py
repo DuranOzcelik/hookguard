@@ -4,6 +4,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from backend.app import create_app
+from backend.references import TEST_ENTRIES, References
 from tests.conftest import FakeLookups
 
 
@@ -159,3 +160,9 @@ def test_shorten_refuses_short_links_and_non_links(client):
     assert client.post("/api/shorten", json={"url": "ftp://files.example.com/x"}).status_code == 422
     assert client.get("/api/short/nope").status_code == 404
     assert client.get("/api/short/AbCdEf1").status_code == 404
+
+
+def test_test_entries_are_always_listed(tmp_path):
+    refs = References.load(tmp_path)  # no data at all
+    assert all(refs.usom_match(name) for name in TEST_ENTRIES)
+    assert all(name.endswith(".example") for name in TEST_ENTRIES)

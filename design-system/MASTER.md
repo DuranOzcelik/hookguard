@@ -217,7 +217,7 @@ Doğrulanmış ikon adları:
   | Tür | İkon |
   |---|---|
   | Kargo | `delivery-bold-duotone` |
-  | e-Devlet / vergi | `document-text-bold-duotone` |
+  | Vergi iadesi ve cezalar | `document-text-bold-duotone` |
   | Banka | `card-bold-duotone` |
   | Çekiliş / kampanya | `gift-bold-duotone` |
   | Yatırım | `graph-up-bold-duotone` |
@@ -271,7 +271,7 @@ Doğrulanmış ikon adları:
 | DNS çözülüyor / yok | "Site şu an açılabiliyor" / "Site şu an açılmıyor" |
 | Paylaşımlı platform | "Herkesin ücretsiz site açabildiği bir hizmetin üzerinde" |
 | Oltalama / phishing | "dolandırıcılık sitesi" (ilk geçişte gerekirse "sahte site") |
-| Alan adı | "alan adı" (ör. `ptt.gov.tr`); gizlilik notunda "linkin tamamı değil, yalnızca alan adı" |
+| Alan adı | "alan adı" (ör. `paypal.com`); gizlilik notunda "linkin tamamı değil, yalnızca alan adı" |
 
 **Hiç kullanılmayacaklar:**
 - korku dili ("Hacklendin!", "Hemen!!!", tamamı büyük harf);

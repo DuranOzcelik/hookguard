@@ -79,7 +79,7 @@ export function isIp(host: string): boolean {
 }
 
 /**
- * "https://user@Giris.Akbank.com.tr:8443/x?y=1" -> "giris.akbank.com.tr"; null if it is not a web address.
+ * "https://user@Login.Example-Bank.co.uk:8443/x?y=1" -> "login.example-bank.co.uk"; null if it is not a web address.
  * Defanged links from security reports ("hxxps://evil[.]com") are accepted too.
  */
 export function extractHost(input: string): string | null {

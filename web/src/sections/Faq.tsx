@@ -23,7 +23,7 @@ const TEXT: Record<"en" | "tr", { title: string; items: { q: string; a: string[]
               "Short links (such as bit.ly) hide where they lead, and a web page cannot see it without opening them. The HookGuard extension can: it reads where they go on your computer.",
             ]
           : [
-              "The full link stays on your device. Only the domain reaches our server: from ptt-kargo-odeme.example/track?no=123, only “ptt-kargo-odeme.example”.",
+              "The full link stays on your device. Only the domain reaches our server: from dhl-parcel-redelivery.example/track?no=123, only “dhl-parcel-redelivery.example”.",
               "The addresses you check are not stored. Short links (such as bit.ly) are the one exception: to see where one leads, we ask you before sending the short link itself.",
             ],
       },
@@ -99,7 +99,7 @@ const TEXT: Record<"en" | "tr", { title: string; items: { q: string; a: string[]
               "Kısa linkler (bit.ly gibi) nereye gittiklerini gizler ve bir web sayfası onları açmadan bunu göremez. HookGuard eklentisi görebilir: nereye gittiklerini senin bilgisayarında okur.",
             ]
           : [
-              "Linkin tamamı senin cihazında kalır. Sunucumuza yalnızca alan adı gider: örneğin ptt-kargo-odeme.example/takip?no=123 linkinden yalnızca “ptt-kargo-odeme.example”.",
+              "Linkin tamamı senin cihazında kalır. Sunucumuza yalnızca alan adı gider: örneğin dhl-parcel-redelivery.example/track?no=123 linkinden yalnızca “dhl-parcel-redelivery.example”.",
               "Kontrol ettiğin adresler kaydedilmez. Tek istisna kısa linklerdir (bit.ly gibi): nereye gittiğini görmek istersen kısa linki sunucuya göndermek için ayrıca onay isteriz.",
             ],
       },

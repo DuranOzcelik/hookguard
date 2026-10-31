@@ -21,7 +21,8 @@ import { extensionInstalled } from "../extension";
 const MIN_LOADING_MS = 400;
 
 // Made-up addresses on the reserved .example domain (they can never be real sites) and one official site.
-const EXAMPLES = ["ptt-kargo-odeme.example", "edevlet-giris-sorgu.example", "bahis-giris845.example", "turkiye.gov.tr"];
+// dhl-parcel-redelivery.example is on the known-threat list on purpose (TEST_ENTRIES in backend/references.py).
+const EXAMPLES = ["dhl-parcel-redelivery.example", "steam-gift-claim.example", "casino-bonus845.example", "paypal.com"];
 
 const TEXT = {
   en: {
@@ -55,7 +56,7 @@ const TEXT = {
     noDestination: "We could not find where this short link leads. Ask the person who sent it before you click.",
     phone: {
       label: "Example: a scam text message that HookGuard marks as dangerous",
-      sender: "+90 5•• ••• •• 37",
+      sender: "+•• •••• ••• 237",
       time: "Today 14:02",
       message: "Your parcel could not be delivered. Update your address within 24 hours:",
       verdict: "Dangerous",
@@ -93,7 +94,7 @@ const TEXT = {
     noDestination: "Bu kısa linkin nereye gittiğini bulamadık. Tıklamadan önce linki gönderen kişiye sor.",
     phone: {
       label: "Örnek: HookGuard'ın tehlikeli diye işaretlediği dolandırıcı bir SMS",
-      sender: "+90 5•• ••• •• 37",
+      sender: "+•• •••• ••• 237",
       time: "Bugün 14:02",
       message: "Kargonuz teslim edilemedi. 24 saat içinde adresinizi güncelleyin:",
       verdict: "Tehlikeli",
@@ -144,7 +145,7 @@ function PhoneScene({ t }: { t: Text["phone"] }) {
         </div>
         <p className="phone__time">{t.time}</p>
         <div className="phone__bubble">
-          {t.message} <span className="phone__link">ptt-kargo-odeme.example/t/8Kq2</span>
+          {t.message} <span className="phone__link">dhl-parcel-redelivery.example/t/8Kq2</span>
         </div>
         <motion.div
           className="phone__verdict tone-danger"

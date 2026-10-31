@@ -9,7 +9,7 @@ type Type = { title: string; looks: string; watch: string[] };
 
 const TEXT: Record<"en" | "tr", { title: string; lead: string; looks: string; watch: string; types: Type[] }> = {
   en: {
-    title: "Common scams in Turkey",
+    title: "Common scams",
     lead: "The messages look different, but the aim is always the same: to rush you into giving away details or money.",
     looks: "What it looks like",
     watch: "What to watch for",
@@ -20,9 +20,9 @@ const TEXT: Record<"en" | "tr", { title: string; lead: string; looks: string; wa
         watch: ["Couriers never ask for a fee or card details to update an address.", "Track your parcel in the courier's own app or website."],
       },
       {
-        title: "e-Devlet and tax refunds",
-        looks: "“A tax refund of 1,250 TL has been issued to you. Log in with your e-Devlet details to receive it: …”",
-        watch: ["Government offices never send refund links by SMS.", "e-Devlet's only address is turkiye.gov.tr; a “refund” page asking for card details is fake."],
+        title: "Tax refunds and fines",
+        looks: "“A tax refund has been issued to you. Log in within 24 hours to receive it: …”",
+        watch: ["Government offices never send refund or fine links by SMS.", "Type the official site's address yourself; a “refund” page asking for card details is fake."],
       },
       {
         title: "“Your bank account is suspended”",
@@ -31,7 +31,7 @@ const TEXT: Record<"en" | "tr", { title: string; lead: string; looks: string; wa
       },
       {
         title: "Prize draws and campaigns",
-        looks: "“Congratulations! You won a phone in our supermarket draw. Just pay the 29 TL shipping fee: …”",
+        looks: "“Congratulations! You won a phone in our supermarket draw. Just pay the small shipping fee: …”",
         watch: ["You cannot win a draw you never entered.", "“Just pay the shipping” campaigns are there to steal your card details."],
       },
       {
@@ -41,7 +41,7 @@ const TEXT: Record<"en" | "tr", { title: string; lead: string; looks: string; wa
       },
       {
         title: "Illegal betting",
-        looks: "“500 TL trial bonus! Our new login address: …”",
+        looks: "“Free trial bonus! Our new login address: …”",
         watch: ["Unlicensed betting sites are illegal; their addresses change as they are blocked.", "You may never get your money back. For support: Yeşilay 115."],
       },
       {
@@ -51,13 +51,13 @@ const TEXT: Record<"en" | "tr", { title: string; lead: string; looks: string; wa
       },
       {
         title: "Fake virus warnings",
-        looks: "“WARNING! 5 viruses found on your computer. Call the support line now: 0850 …”",
+        looks: "“WARNING! 5 viruses found on your computer. Call the support line now: …”",
         watch: ["Virus warnings that appear in your browser are fake; your computer has no virus.", "Do not call, install nothing and give no one remote access."],
       },
     ],
   },
   tr: {
-    title: "Türkiye'de sık görülen dolandırıcılık türleri",
+    title: "Sık görülen dolandırıcılık türleri",
     lead: "Mesajlar farklı görünse de amaç hep aynı: seni acele ettirip bilgi ya da para almak.",
     looks: "Nasıl görünür?",
     watch: "Neye dikkat etmeli?",
@@ -68,9 +68,9 @@ const TEXT: Record<"en" | "tr", { title: string; lead: string; looks: string; wa
         watch: ["Kargo firmaları adres güncellemek için ücret ya da kart bilgisi istemez.", "Takip numarasını firmanın kendi uygulamasında ya da sitesinde sorgula."],
       },
       {
-        title: "e-Devlet ve vergi iadesi",
-        looks: "“Adınıza 1.250 TL vergi iadesi tanımlanmıştır. Almak için e-Devlet bilgilerinizle giriş yapın: …”",
-        watch: ["Devlet kurumları iade için SMS'le link göndermez.", "e-Devlet'in tek adresi turkiye.gov.tr'dir; kart bilgisi isteyen “iade” sayfası sahtedir."],
+        title: "Vergi iadesi ve cezalar",
+        looks: "“Adınıza vergi iadesi tanımlanmıştır. Almak için 24 saat içinde giriş yapın: …”",
+        watch: ["Devlet kurumları iade ya da ceza için SMS'le link göndermez.", "Resmi sitenin adresini kendin yaz; kart bilgisi isteyen “iade” sayfası sahtedir."],
       },
       {
         title: "“Banka hesabınız askıya alındı”",
@@ -79,7 +79,7 @@ const TEXT: Record<"en" | "tr", { title: string; lead: string; looks: string; wa
       },
       {
         title: "Çekiliş ve kampanya",
-        looks: "“Tebrikler! Market çekilişinde telefon kazandınız. Yalnızca 29 TL kargo ücretini ödeyin: …”",
+        looks: "“Tebrikler! Market çekilişinde telefon kazandınız. Yalnızca küçük bir kargo ücreti ödeyin: …”",
         watch: ["Katılmadığın bir çekilişi kazanamazsın.", "“Sadece kargo ücreti” isteyen kampanyalar kart bilgini çalmak içindir."],
       },
       {
@@ -89,7 +89,7 @@ const TEXT: Record<"en" | "tr", { title: string; lead: string; looks: string; wa
       },
       {
         title: "Yasadışı bahis",
-        looks: "“Deneme bonusu 500 TL! Güncel giriş adresimiz: …”",
+        looks: "“Ücretsiz deneme bonusu! Güncel giriş adresimiz: …”",
         watch: ["İzinsiz bahis siteleri yasa dışıdır; adresleri kapatıldıkça değişir.", "Yatırdığın parayı geri alamayabilirsin. Destek için Yeşilay 115."],
       },
       {
@@ -99,7 +99,7 @@ const TEXT: Record<"en" | "tr", { title: string; lead: string; looks: string; wa
       },
       {
         title: "Sahte virüs uyarısı",
-        looks: "“UYARI! Bilgisayarınızda 5 virüs bulundu. Hemen destek hattını arayın: 0850 …”",
+        looks: "“UYARI! Bilgisayarınızda 5 virüs bulundu. Hemen destek hattını arayın: …”",
         watch: ["Tarayıcıda çıkan virüs uyarıları sahtedir; bilgisayarında virüs yok.", "Numarayı arama, program yükleme, kimseye uzaktan erişim verme."],
       },
     ],

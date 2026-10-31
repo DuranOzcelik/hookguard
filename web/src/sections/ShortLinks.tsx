@@ -43,7 +43,7 @@ const TEXT = {
     offline: "Could not connect. Check your internet connection and try again.",
     working: "Working…",
     why: [
-      ["Why are short links risky?", "Short links hide the real address. Scammers use them so you cannot see that “ptt-kargo” is not the real courier until it is too late."],
+      ["Why are short links risky?", "Short links hide the real address. Scammers use them so you cannot see that “dhl-parcel-redelivery” is not the real courier until it is too late."],
       ["How is a HookGuard short link different?", "Before anyone reaches the site, they see where the link goes and a fresh safety check. If the site turns dangerous later, they are warned."],
     ],
   },
@@ -77,7 +77,7 @@ const TEXT = {
     offline: "Bağlanılamadı. İnternet bağlantını kontrol edip yeniden dene.",
     working: "Hazırlanıyor…",
     why: [
-      ["Kısa linkler neden riskli?", "Kısa linkler asıl adresi gizler. Dolandırıcılar onları, “ptt-kargo”nun gerçek kargo firması olmadığını iş işten geçene kadar görmeyesin diye kullanır."],
+      ["Kısa linkler neden riskli?", "Kısa linkler asıl adresi gizler. Dolandırıcılar onları, “dhl-parcel-redelivery”nin gerçek kargo firması olmadığını iş işten geçene kadar görmeyesin diye kullanır."],
       ["HookGuard kısa linki neden farklı?", "Siteye ulaşmadan önce herkes linkin nereye gittiğini ve güncel bir güvenlik kontrolünü görür. Site sonradan tehlikeli hâle gelirse uyarılır."],
     ],
   },

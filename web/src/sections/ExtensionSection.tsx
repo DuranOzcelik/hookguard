@@ -82,7 +82,7 @@ const TEXT = {
   },
 };
 
-const MOCK = { domain: "ptt-kargo-odeme.example", level: "high" as const, score: 92, reasons: [], category: null };
+const MOCK = { domain: "dhl-parcel-redelivery.example", level: "high" as const, score: 92, reasons: [], category: null };
 
 export function ExtensionSection() {
   const t = TEXT[useLang()];
@@ -115,7 +115,7 @@ export function ExtensionSection() {
                 <i />
                 <i />
               </span>
-              <span className="mockup__url mono">ptt-kargo-odeme.example/track</span>
+              <span className="mockup__url mono">dhl-parcel-redelivery.example/track</span>
             </div>
             <div className="mockup__page" role="img" aria-label={t.sampleLabel}>
               <div className="mockup__brand">

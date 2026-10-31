@@ -114,7 +114,7 @@ const en: Content = {
     steps: [
       "If you entered card or bank details, call your bank now (the number on the back of your card) and have the card blocked.",
       "If you entered a password, change it now, and everywhere else you use the same password.",
-      "If you entered your e-Devlet password, change your e-Devlet password.",
+      "If you entered a government or tax login, change that password too.",
       "If you installed an app on your phone, disconnect the phone from the internet and call your bank.",
       "If you lost money, go to the nearest police station or the public prosecutor's office.",
     ],
@@ -310,7 +310,7 @@ const tr: Content = {
     steps: [
       "Kart ya da banka bilgisi girdiysen hemen bankanı ara (kartının arkasındaki numara) ve kartını kapattır.",
       "Şifre girdiysen o şifreyi hemen değiştir; aynı şifreyi kullandığın her yerde de değiştir.",
-      "e-Devlet şifreni girdiysen e-Devlet şifreni değiştir.",
+      "Devlet ya da vergi sistemine giriş bilgilerini girdiysen o şifreyi de değiştir.",
       "Telefonuna bir uygulama yüklediysen telefonu internetten çıkar ve bankanı ara.",
       "Para kaybettiysen en yakın karakola ya da Cumhuriyet Başsavcılığına başvur.",
     ],
